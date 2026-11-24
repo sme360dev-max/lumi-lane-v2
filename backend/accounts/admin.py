@@ -17,6 +17,9 @@ class OrderAdminForm(forms.ModelForm):
         previous = Order.objects.filter(pk=self.instance.pk).values_list("status", flat=True).first() if self.instance.pk else None
         if previous == Order.Status.COMPLETED and cleaned.get("status") != Order.Status.COMPLETED:
             raise forms.ValidationError("A completed order cannot be moved back to an earlier status.")
+        if previous == Order.Status.CANCELLED and cleaned.get("status") != Order.Status.CANCELLED:
+            # Cancelling already returned any reward credit, so reopening would let it be spent twice.
+            raise forms.ValidationError("A cancelled order cannot be reopened. Ask the customer to place a new order.")
         return cleaned
 
 

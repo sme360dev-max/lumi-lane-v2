@@ -47,3 +47,21 @@ export async function accountRequest<T = unknown>(path: string, init: RequestIni
   }
   return data as T;
 }
+
+/**
+ * One request id per distinct submission. Retrying the same payload (after a timeout or
+ * while the API wakes up) reuses the id, so the server returns the first result instead
+ * of creating a duplicate booking or order. A changed payload gets a fresh id.
+ */
+export function createRequestKey() {
+  let current: { fingerprint: string; id: string } | null = null;
+  return {
+    for(fingerprint: string) {
+      if (!current || current.fingerprint !== fingerprint) current = { fingerprint, id: window.crypto.randomUUID() };
+      return current.id;
+    },
+    reset() {
+      current = null;
+    },
+  };
+}

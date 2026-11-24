@@ -5,7 +5,7 @@ import { BUSINESS } from '@/data/business';
 import { BOOK, VISIT } from '@/data/content';
 import { CtaLink, ctaClass } from '@/components/ui/Button';
 import { ResponsivePicture } from '@/components/ui/ResponsivePicture';
-import { API_BASE_URL, readAuthToken } from '@/lib/api';
+import { API_BASE_URL, createRequestKey, readAuthToken } from '@/lib/api';
 import { BookingDate } from './BookingDate';
 import { BookingField } from './BookingField';
 import {
@@ -31,6 +31,7 @@ export function BookingForm() {
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState('');
   const summaryRef = useRef<HTMLHeadingElement>(null);
+  const requestKey = useRef(createRequestKey());
 
   const set = (field: Field) => (value: string) => {
     setValues((previous) => ({ ...previous, [field]: value }));
@@ -52,28 +53,29 @@ export function BookingForm() {
     try {
       const parsedDate = parseDate(values.date)!;
       const parsedTime = parseTime(values.time)!;
+      const booking = {
+        name: values.name.trim(),
+        email: values.email.trim(),
+        phone: values.phone.trim(),
+        guests: values.guests.trim(),
+        date: `${parsedDate.year}-${String(parsedDate.month).padStart(2, '0')}-${String(parsedDate.day).padStart(2, '0')}`,
+        time: `${String(parsedTime.hours).padStart(2, '0')}:${String(parsedTime.minutes).padStart(2, '0')}`,
+        notes: values.notes.trim(),
+      };
       const response = await fetch(`${API_BASE_URL}/api/bookings/`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           ...(readAuthToken() ? { Authorization: `Bearer ${readAuthToken()}` } : {}),
         },
-        body: JSON.stringify({
-          requestId: window.crypto.randomUUID(),
-          name: values.name.trim(),
-          email: values.email.trim(),
-          phone: values.phone.trim(),
-          guests: values.guests.trim(),
-          date: `${parsedDate.year}-${String(parsedDate.month).padStart(2, '0')}-${String(parsedDate.day).padStart(2, '0')}`,
-          time: `${String(parsedTime.hours).padStart(2, '0')}:${String(parsedTime.minutes).padStart(2, '0')}`,
-          notes: values.notes.trim(),
-        }),
+        body: JSON.stringify({ requestId: requestKey.current.for(JSON.stringify(booking)), ...booking }),
       });
       const result = await response.json().catch(() => ({}));
       if (!response.ok) {
         if (result.errors && typeof result.errors === 'object') setErrors(result.errors as BookingErrors);
         throw new Error(result.error || 'We could not send your request. Please try again or call the venue.');
       }
+      requestKey.current.reset();
       setChecked(true);
       window.requestAnimationFrame(() => summaryRef.current?.focus());
     } catch (error) {

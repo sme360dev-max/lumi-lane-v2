@@ -18,7 +18,7 @@ import { QuantityStepper } from '@/components/ui/QuantityStepper';
 import { ResponsivePicture } from '@/components/ui/ResponsivePicture';
 import { HERO } from '@/data/content';
 import { money } from '@/features/menu/catalog';
-import { accountRequest } from '@/lib/api';
+import { accountRequest, createRequestKey } from '@/lib/api';
 import { useAccountSession } from '@/features/account/account-session';
 import { clearCart, countItems, getCartLines, setQuantity, useCart } from './cart-state';
 
@@ -36,6 +36,7 @@ export function ShoppingBag({ children }: { children: ReactNode }) {
   const returnFocus = useRef<HTMLElement | null>(null);
   const openedOn = useRef<string | null>(null);
   const pressedBackdrop = useRef(false);
+  const orderKey = useRef(createRequestKey());
   const [announcement, setAnnouncement] = useState('');
   const [rewardBalance, setRewardBalance] = useState(0);
   const [useReward, setUseReward] = useState(false);
@@ -62,8 +63,9 @@ export function ShoppingBag({ children }: { children: ReactNode }) {
     setCheckoutError('');
     try {
       const data = await accountRequest<{ order: { id: string; totalCents: number }; message: string }>('/api/account/orders/', {
-        method: 'POST', body: JSON.stringify({ requestId: window.crypto.randomUUID(), useReward }),
+        method: 'POST', body: JSON.stringify({ requestId: orderKey.current.for(JSON.stringify({ bag, useReward })), useReward }),
       });
+      orderKey.current.reset();
       setOrderSuccess(data.order);
       clearCart();
     } catch (error) {

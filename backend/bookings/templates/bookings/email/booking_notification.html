@@ -1,126 +1,76 @@
-<!DOCTYPE html>
-<html lang="en-AU">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="color-scheme" content="light only">
-<meta name="supported-color-schemes" content="light">
-<title>New table request · {{ booking.name }}</title>
-</head>
-<body style="margin:0; padding:0; background-color:#f6efe4; -webkit-text-size-adjust:100%;">
-{# Shown as the inbox preview line, hidden in the message itself. #}
-<div style="display:none; max-height:0; overflow:hidden; mso-hide:all; font-size:1px; line-height:1px; color:#f6efe4;">
-  {{ booking.name }} · {{ date_long }}, {{ time_label }} · {{ guests_label }}. Confirm it in the admin.
-</div>
-
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#f6efe4;">
-<tr><td align="center" style="padding:32px 16px;">
-
-  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:600px;">
-
-    {# Wordmark #}
-    <tr><td align="center" style="padding:0 0 20px;">
-      <span style="font-family:Georgia,'Times New Roman',serif; font-size:22px; letter-spacing:6px; color:#2c342a; font-weight:bold;">LUMI&nbsp;LANE</span><br>
-      <span style="font-family:Arial,Helvetica,sans-serif; font-size:11px; letter-spacing:3px; color:#7a6e61; text-transform:uppercase;">Coffee House &amp; Bar · Lightsview</span>
-    </td></tr>
-
-    {# Card #}
-    <tr><td style="background-color:#fffcf7; border:1px solid #eadfcd; border-radius:18px; overflow:hidden;">
-
-      {# Olive header #}
-      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
-        <tr><td style="background-color:#2c342a; border-radius:17px 17px 0 0; padding:28px 32px 26px;">
-          <p style="margin:0 0 8px; font-family:Arial,Helvetica,sans-serif; font-size:11px; letter-spacing:2.5px; text-transform:uppercase; color:#dacdb5;">
-            <span style="display:inline-block; width:8px; height:8px; border-radius:4px; background-color:#c45441; margin-right:6px;"></span>New table request
-          </p>
-          <h1 style="margin:0; font-family:Georgia,'Times New Roman',serif; font-size:28px; line-height:34px; font-weight:bold; color:#faeddd;">
-            {{ booking.name }}
-          </h1>
-          <p style="margin:6px 0 0; font-family:Arial,Helvetica,sans-serif; font-size:14px; line-height:20px; color:#cfc5b4;">
-            would like a table for {{ guests_label }}.
-          </p>
-        </td></tr>
-      </table>
-
-      {# When / time / guests #}
-      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
-        <tr><td style="padding:26px 32px 6px;">
-          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
-            <tr>
-              <td width="84" valign="top" style="padding-right:18px;">
-                <table role="presentation" width="84" cellpadding="0" cellspacing="0" border="0" style="background-color:#f8e5df; border-radius:14px;">
-                  <tr><td align="center" style="padding:12px 0 2px; font-family:Georgia,'Times New Roman',serif; font-size:34px; line-height:36px; font-weight:bold; color:#a9432f;">{{ date_day }}</td></tr>
-                  <tr><td align="center" style="padding:0 0 12px; font-family:Arial,Helvetica,sans-serif; font-size:11px; letter-spacing:2px; font-weight:bold; color:#a9432f;">{{ date_month }}</td></tr>
-                </table>
-              </td>
-              <td valign="middle">
-                <p style="margin:0; font-family:Arial,Helvetica,sans-serif; font-size:11px; letter-spacing:2px; text-transform:uppercase; color:#7a6e61;">{{ when_label }}</p>
-                <p style="margin:4px 0 0; font-family:Georgia,'Times New Roman',serif; font-size:21px; line-height:27px; font-weight:bold; color:#1c1814;">{{ date_long }}</p>
-                <p style="margin:6px 0 0; font-family:Arial,Helvetica,sans-serif; font-size:15px; line-height:22px; color:#4a4038;">
-                  <strong style="color:#1c1814;">{{ time_label }}</strong> &nbsp;·&nbsp; <strong style="color:#1c1814;">{{ guests_label }}</strong>
-                </p>
-              </td>
-            </tr>
-          </table>
-        </td></tr>
-
-        {# Guest details #}
-        <tr><td style="padding:18px 32px 0;">
-          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-top:1px solid #eadfcd;">
-            <tr>
-              <td width="104" style="padding:14px 0; border-bottom:1px solid #eadfcd; font-family:Arial,Helvetica,sans-serif; font-size:12px; letter-spacing:1px; text-transform:uppercase; color:#7a6e61;">Email</td>
-              <td style="padding:14px 0; border-bottom:1px solid #eadfcd; font-family:Arial,Helvetica,sans-serif; font-size:15px; color:#1c1814;"><a href="mailto:{{ booking.email }}" style="color:#a9432f; text-decoration:none;">{{ booking.email }}</a></td>
-            </tr>
-            <tr>
-              <td width="104" style="padding:14px 0; border-bottom:1px solid #eadfcd; font-family:Arial,Helvetica,sans-serif; font-size:12px; letter-spacing:1px; text-transform:uppercase; color:#7a6e61;">Phone</td>
-              <td style="padding:14px 0; border-bottom:1px solid #eadfcd; font-family:Arial,Helvetica,sans-serif; font-size:15px; color:#1c1814;"><a href="{{ phone_href }}" style="color:#a9432f; text-decoration:none;">{{ booking.phone }}</a></td>
-            </tr>
-            <tr>
-              <td width="104" valign="top" style="padding:14px 0; border-bottom:1px solid #eadfcd; font-family:Arial,Helvetica,sans-serif; font-size:12px; letter-spacing:1px; text-transform:uppercase; color:#7a6e61;">Requests</td>
-              <td style="padding:14px 0; border-bottom:1px solid #eadfcd; font-family:Arial,Helvetica,sans-serif; font-size:15px; line-height:22px; color:#1c1814;">
-                {% if booking.notes %}
-                  <span style="display:block; padding:10px 12px; background-color:#faf4ea; border-left:3px solid #c45441; border-radius:4px;">{{ booking.notes|linebreaksbr }}</span>
-                {% else %}<span style="color:#a39a8c;">None</span>{% endif %}
-              </td>
-            </tr>
-          </table>
-        </td></tr>
-
-        {# Actions #}
-        <tr><td align="center" style="padding:28px 32px 8px;">
-          <table role="presentation" cellpadding="0" cellspacing="0" border="0">
-            <tr><td align="center" style="border-radius:999px; background-color:#c45441;">
-              <a href="{{ admin_url }}" style="display:inline-block; padding:15px 34px; font-family:Arial,Helvetica,sans-serif; font-size:15px; font-weight:bold; color:#ffffff; text-decoration:none; border-radius:999px;">Review &amp; confirm in admin&nbsp;&rarr;</a>
-            </td></tr>
-          </table>
-        </td></tr>
-        <tr><td align="center" style="padding:6px 32px 28px; font-family:Arial,Helvetica,sans-serif; font-size:14px; color:#4a4038;">
-          <a href="mailto:{{ booking.email }}?subject={{ 'Your table at Lumi Lane'|urlencode }}" style="color:#2c342a; font-weight:bold; text-decoration:none;">Email guest</a>
-          &nbsp;&nbsp;·&nbsp;&nbsp;
-          <a href="{{ phone_href }}" style="color:#2c342a; font-weight:bold; text-decoration:none;">Call guest</a>
-          &nbsp;&nbsp;·&nbsp;&nbsp;
-          <a href="{{ list_url }}" style="color:#2c342a; font-weight:bold; text-decoration:none;">All new requests</a>
-        </td></tr>
-
-        {# Reminder #}
-        <tr><td style="padding:0 32px 28px;">
-          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#f7ead1; border-radius:12px;">
-            <tr><td style="padding:14px 16px; font-family:Arial,Helvetica,sans-serif; font-size:13px; line-height:19px; color:#875811;">
-              <strong>This is a request, not a confirmed booking.</strong> The guest is waiting to hear back. Reply to this email to write to {{ booking.name }} directly.
-            </td></tr>
-          </table>
-        </td></tr>
-      </table>
-    </td></tr>
-
-    {# Footer #}
-    <tr><td align="center" style="padding:22px 16px 0; font-family:Arial,Helvetica,sans-serif; font-size:12px; line-height:18px; color:#7a6e61;">
-      Received {{ submitted_label }} (Adelaide time) through the Lumi Lane website.<br>
-      Shop 9, 163/169 Fosters Rd, Lightsview SA 5085
-    </td></tr>
-
+{% extends "emails/base.html" %}
+{% block title %}New table request · {{ booking.name }}{% endblock %}
+{% block preheader %}{{ booking.name }} · {{ date_long }}, {{ time_label }} · {{ guests_label }}. Confirm it in the admin.{% endblock %}
+{% block eyebrow %}New table request{% endblock %}
+{% block heading %}{{ booking.name }}{% endblock %}
+{% block subheading %}would like a table for {{ guests_label }}.{% endblock %}
+{% block content %}
+{# When / time / guests #}
+<tr><td style="padding:26px 32px 6px;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+    <tr>
+      <td width="84" valign="top" style="padding-right:18px;">
+        <table role="presentation" width="84" cellpadding="0" cellspacing="0" border="0" style="background-color:#f8e5df; border-radius:14px;">
+          <tr><td align="center" style="padding:12px 0 2px; font-family:Georgia,'Times New Roman',serif; font-size:34px; line-height:36px; font-weight:bold; color:#a9432f;">{{ date_day }}</td></tr>
+          <tr><td align="center" style="padding:0 0 12px; font-family:Arial,Helvetica,sans-serif; font-size:11px; letter-spacing:2px; font-weight:bold; color:#a9432f;">{{ date_month }}</td></tr>
+        </table>
+      </td>
+      <td valign="middle">
+        <p style="margin:0; font-family:Arial,Helvetica,sans-serif; font-size:11px; letter-spacing:2px; text-transform:uppercase; color:#7a6e61;">{{ when_label }}</p>
+        <p style="margin:4px 0 0; font-family:Georgia,'Times New Roman',serif; font-size:21px; line-height:27px; font-weight:bold; color:#1c1814;">{{ date_long }}</p>
+        <p style="margin:6px 0 0; font-family:Arial,Helvetica,sans-serif; font-size:15px; line-height:22px; color:#4a4038;">
+          <strong style="color:#1c1814;">{{ time_label }}</strong> &nbsp;·&nbsp; <strong style="color:#1c1814;">{{ guests_label }}</strong>
+        </p>
+      </td>
+    </tr>
   </table>
 </td></tr>
-</table>
-</body>
-</html>
+
+{# Guest details #}
+<tr><td style="padding:18px 32px 0;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-top:1px solid #eadfcd;">
+    <tr>
+      <td width="104" style="padding:14px 0; border-bottom:1px solid #eadfcd; font-family:Arial,Helvetica,sans-serif; font-size:12px; letter-spacing:1px; text-transform:uppercase; color:#7a6e61;">Email</td>
+      <td style="padding:14px 0; border-bottom:1px solid #eadfcd; font-family:Arial,Helvetica,sans-serif; font-size:15px; color:#1c1814;"><a href="mailto:{{ booking.email }}" style="color:#a9432f; text-decoration:none;">{{ booking.email }}</a></td>
+    </tr>
+    <tr>
+      <td width="104" style="padding:14px 0; border-bottom:1px solid #eadfcd; font-family:Arial,Helvetica,sans-serif; font-size:12px; letter-spacing:1px; text-transform:uppercase; color:#7a6e61;">Phone</td>
+      <td style="padding:14px 0; border-bottom:1px solid #eadfcd; font-family:Arial,Helvetica,sans-serif; font-size:15px; color:#1c1814;"><a href="{{ phone_href }}" style="color:#a9432f; text-decoration:none;">{{ booking.phone }}</a></td>
+    </tr>
+    <tr>
+      <td width="104" valign="top" style="padding:14px 0; border-bottom:1px solid #eadfcd; font-family:Arial,Helvetica,sans-serif; font-size:12px; letter-spacing:1px; text-transform:uppercase; color:#7a6e61;">Requests</td>
+      <td style="padding:14px 0; border-bottom:1px solid #eadfcd; font-family:Arial,Helvetica,sans-serif; font-size:15px; line-height:22px; color:#1c1814;">
+        {% if booking.notes %}
+          <span style="display:block; padding:10px 12px; background-color:#faf4ea; border-left:3px solid #c45441; border-radius:4px;">{{ booking.notes|linebreaksbr }}</span>
+        {% else %}<span style="color:#a39a8c;">None</span>{% endif %}
+      </td>
+    </tr>
+  </table>
+</td></tr>
+
+{# Actions #}
+<tr><td align="center" style="padding:28px 32px 8px;">
+  <table role="presentation" cellpadding="0" cellspacing="0" border="0">
+    <tr><td align="center" style="border-radius:999px; background-color:#c45441;">
+      <a href="{{ admin_url }}" style="display:inline-block; padding:15px 34px; font-family:Arial,Helvetica,sans-serif; font-size:15px; font-weight:bold; color:#ffffff; text-decoration:none; border-radius:999px;">Review &amp; confirm in admin&nbsp;&rarr;</a>
+    </td></tr>
+  </table>
+</td></tr>
+<tr><td align="center" style="padding:6px 32px 28px; font-family:Arial,Helvetica,sans-serif; font-size:14px; color:#4a4038;">
+  <a href="mailto:{{ booking.email }}?subject={{ 'Your table at Lumi Lane'|urlencode }}" style="color:#2c342a; font-weight:bold; text-decoration:none;">Email guest</a>
+  &nbsp;&nbsp;·&nbsp;&nbsp;
+  <a href="{{ phone_href }}" style="color:#2c342a; font-weight:bold; text-decoration:none;">Call guest</a>
+  &nbsp;&nbsp;·&nbsp;&nbsp;
+  <a href="{{ list_url }}" style="color:#2c342a; font-weight:bold; text-decoration:none;">All new requests</a>
+</td></tr>
+
+{# Reminder #}
+<tr><td style="padding:0 32px 28px;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#f7ead1; border-radius:12px;">
+    <tr><td style="padding:14px 16px; font-family:Arial,Helvetica,sans-serif; font-size:13px; line-height:19px; color:#875811;">
+      <strong>This is a request, not a confirmed booking.</strong> The guest is waiting to hear back. Reply to this email to write to {{ booking.name }} directly.
+    </td></tr>
+  </table>
+</td></tr>
+{% endblock %}
+{% block footer %}Received {{ submitted_label }} (Adelaide time) through the Lumi Lane website.{% endblock %}

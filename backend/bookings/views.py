@@ -14,6 +14,7 @@ from django.views.decorators.http import require_http_methods
 
 from .models import BookingRequest
 from .notifications import build_booking_email
+from accounts import ratelimit
 from accounts.auth import account_from_request
 
 logger = logging.getLogger(__name__)
@@ -98,6 +99,15 @@ def booking_create(request):
         errors["notes"] = "Special requests can be up to 2,000 characters."
     if errors:
         return JsonResponse({"error": "Please check the highlighted details.", "errors": errors}, status=400)
+
+    # Every new request emails the venue, so cap how many one visitor or address can send.
+    is_retry = request_id and BookingRequest.objects.filter(request_id=request_id).exists()
+    if not is_retry and (limited := ratelimit.check(
+        request,
+        ("booking-ip", ratelimit.client_ip(request), 6, 3600),
+        ("booking-email", data["email"], 4, 3600),
+    )):
+        return limited
 
     if not settings.BOOKING_NOTIFICATION_EMAIL:
         logger.error("BOOKING_NOTIFICATION_EMAIL is not configured")

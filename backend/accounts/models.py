@@ -142,3 +142,11 @@ class LoyaltyEntry(models.Model):
             models.UniqueConstraint(fields=("order",), condition=models.Q(order__isnull=False, kind="reward_redeemed"), name="unique_order_reward_redemption"),
             models.UniqueConstraint(fields=("order",), condition=models.Q(order__isnull=False, kind="reward_refunded"), name="unique_order_reward_refund"),
         ]
+
+
+class RateLimit(models.Model):
+    """Fixed-window request counter shared by every worker (see accounts/ratelimit.py)."""
+
+    key = models.CharField(max_length=96, unique=True)
+    window_start = models.DateTimeField(db_index=True)
+    count = models.PositiveIntegerField(default=0)

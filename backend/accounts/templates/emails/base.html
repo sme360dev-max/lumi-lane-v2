@@ -1,0 +1,53 @@
+{% comment %}
+Shared layout for every Lumi Lane email. Inline styles and tables only: most mail apps
+strip <style> blocks and ignore flexbox/grid. Child templates fill these blocks:
+  title, preheader              inbox tab title and preview line
+  eyebrow, heading, subheading  olive header band
+  content                       card body (rows of <tr>)
+  footer                        small print under the card
+{% endcomment %}<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light only">
+<meta name="supported-color-schemes" content="light">
+<title>{% block title %}Lumi Lane{% endblock %}</title>
+</head>
+<body style="margin:0; padding:0; background-color:#f6efe4; -webkit-text-size-adjust:100%;">
+<div style="display:none; max-height:0; overflow:hidden; mso-hide:all; font-size:1px; line-height:1px; color:#f6efe4;">{% block preheader %}{% endblock %}</div>
+
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#f6efe4;">
+<tr><td align="center" style="padding:32px 16px;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:600px;">
+
+    <tr><td align="center" style="padding:0 0 20px;">
+      <span style="font-family:Georgia,'Times New Roman',serif; font-size:22px; letter-spacing:6px; color:#2c342a; font-weight:bold;">LUMI&nbsp;LANE</span><br>
+      <span style="font-family:Arial,Helvetica,sans-serif; font-size:11px; letter-spacing:3px; color:#7a6e61; text-transform:uppercase;">Coffee House &amp; Bar · Lightsview</span>
+    </td></tr>
+
+    <tr><td style="background-color:#fffcf7; border:1px solid #eadfcd; border-radius:18px;">
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr><td style="background-color:#2c342a; border-radius:17px 17px 0 0; padding:28px 32px 26px;">
+          <p style="margin:0 0 8px; font-family:Arial,Helvetica,sans-serif; font-size:11px; letter-spacing:2.5px; text-transform:uppercase; color:#dacdb5;">
+            <span style="display:inline-block; width:8px; height:8px; border-radius:4px; background-color:#c45441; margin-right:6px;"></span>{% block eyebrow %}{% endblock %}
+          </p>
+          <h1 style="margin:0; font-family:Georgia,'Times New Roman',serif; font-size:28px; line-height:34px; font-weight:bold; color:#faeddd;">{% block heading %}{% endblock %}</h1>
+          <p style="margin:6px 0 0; font-family:Arial,Helvetica,sans-serif; font-size:14px; line-height:20px; color:#cfc5b4;">{% block subheading %}{% endblock %}</p>
+        </td></tr>
+      </table>
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+        {% block content %}{% endblock %}
+      </table>
+    </td></tr>
+
+    <tr><td align="center" style="padding:22px 16px 0; font-family:Arial,Helvetica,sans-serif; font-size:12px; line-height:18px; color:#7a6e61;">
+      {% block footer %}{% endblock %}<br>
+      Lumi Lane · Shop 9, 163/169 Fosters Rd, Lightsview SA 5085
+    </td></tr>
+
+  </table>
+</td></tr>
+</table>
+</body>
+</html>

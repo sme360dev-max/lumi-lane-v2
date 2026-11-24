@@ -1,0 +1,18 @@
+{% autoescape off %}NEW PICKUP ORDER #{{ reference }} — LUMI LANE
+
+Customer: {{ customer_name }}
+Email:    {{ customer_email }}
+Phone:    {{ customer_phone|default:"Not provided" }}
+
+{% for line in lines %}{{ line.quantity }} x {{ line.name }}{% if line.label %} ({{ line.label }}){% endif %} — {{ line.amount }}
+{% endfor %}
+Subtotal:      {{ subtotal }} AUD{% if has_reward %}
+Reward credit: -{{ reward }} AUD{% endif %}
+Due at pickup: {{ total }} AUD
+
+Notes: {{ order.notes|default:"None" }}
+{% if admin_url %}
+Open in admin: {{ admin_url }}{% endif %}
+
+Received {{ submitted_label }} (Adelaide time) through the Lumi Lane website.
+{% endautoescape %}

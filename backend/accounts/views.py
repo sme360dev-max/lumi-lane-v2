@@ -6,11 +6,10 @@ from datetime import timedelta
 
 from django.conf import settings
 from django.contrib.auth.hashers import check_password, make_password
-from django.core.mail import send_mail
 from django.core.exceptions import ValidationError
 from django.db import transaction
 from django.db.models import F
-from django.db.models import Q, Sum
+from django.db.models import Sum
 from django.core.validators import validate_email
 from django.http import JsonResponse
 from django.utils import timezone
@@ -23,9 +22,13 @@ from menu.serializers import build_menu
 
 from .auth import issue_token, token_digest
 from .decorators import account_required
+from .emails import build_order_email, build_password_reset_email
+from . import ratelimit
 from .models import Account, CartItem, LoyaltyEntry, LoyaltyProgram, Order, PasswordResetToken
 
 logger = logging.getLogger(__name__)
+
+MINUTE, HOUR = 60, 3600
 
 
 def _payload(request):
@@ -52,21 +55,9 @@ def _send_order_notification(order_id):
     if not order:
         return
     try:
-        destination = settings.BOOKING_NOTIFICATION_EMAIL
-        if not destination:
+        if not settings.BOOKING_NOTIFICATION_EMAIL:
             raise RuntimeError("BOOKING_NOTIFICATION_EMAIL is not configured")
-        line_text = "\n".join(
-            f"{line['quantity']} × {line['name']} {line.get('label', '')} — ${line['subtotal'] / 100:.2f}"
-            for line in order.lines
-        )
-        message = (
-            f"Pickup order {order.request_id}\n\nCustomer: {order.account.full_name}\nEmail: {order.account.email}\n"
-            f"Phone: {order.account.phone or 'Not provided'}\n\n{line_text}\n\n"
-            f"Subtotal: ${order.subtotal_cents / 100:.2f} AUD\nReward credit: ${order.reward_cents / 100:.2f} AUD\n"
-            f"Due at pickup: ${order.total_cents / 100:.2f} AUD\n\nNotes: {order.notes or 'None'}"
-        )
-        send_mail(f"New Lumi Lane pickup order · {str(order.request_id)[:8]}", message,
-                  settings.DEFAULT_FROM_EMAIL, [destination])
+        build_order_email(order).send(fail_silently=False)
         Order.objects.filter(pk=order.pk).update(notification_status=Order.NotificationStatus.SENT)
     except Exception:
         logger.exception("Pickup order notification failed for order %s", order_id)
@@ -82,6 +73,8 @@ def register(request):
     name = str(data.get("fullName", data.get("name", ""))).strip()
     email = str(data.get("email", "")).strip().lower()
     password = str(data.get("password", ""))
+    if limited := ratelimit.check(request, ("register-ip", ratelimit.client_ip(request), 10, HOUR)):
+        return limited
     errors = {}
     if not name or len(name) > 80:
         errors["fullName"] = "Enter a name of 1–80 characters."
@@ -109,6 +102,12 @@ def login(request):
         return JsonResponse({"error": "The request could not be read."}, status=400)
     email = str(data.get("email", "")).strip().lower()
     password = str(data.get("password", ""))
+    if limited := ratelimit.check(
+        request,
+        ("login-ip", ratelimit.client_ip(request), 20, 15 * MINUTE),
+        ("login-email", email, 8, 15 * MINUTE),
+    ):
+        return limited
     account = Account.objects.filter(email__iexact=email, is_active=True).first()
     if account is None or not check_password(password, account.password):
         return JsonResponse({"error": "Email or password is incorrect."}, status=401)
@@ -330,7 +329,7 @@ def orders(request):
 @require_http_methods(["GET"])
 @account_required
 def reservations(request):
-    rows = BookingRequest.objects.filter(Q(account=request.account) | Q(email__iexact=request.account.email)).distinct()
+    rows = BookingRequest.objects.filter(account=request.account)
     return JsonResponse({"reservations": [{
         "id": str(row.request_id), "date": row.date.isoformat(), "time": row.time.strftime("%H:%M"),
         "guests": row.guests, "status": row.get_status_display(), "notes": row.notes,
@@ -374,7 +373,7 @@ def loyalty_program(request):
 @account_required
 def dashboard(request):
     account = request.account
-    reservation_rows = BookingRequest.objects.filter(Q(account=account) | Q(email__iexact=account.email)).distinct()
+    reservation_rows = BookingRequest.objects.filter(account=account)
     program = LoyaltyProgram.objects.filter(pk=1).first()
     ledger = account.loyalty_entries.all()
     return JsonResponse({
@@ -403,6 +402,12 @@ def dashboard(request):
 def request_password_reset(request):
     data = _payload(request)
     email = str((data or {}).get("email", "")).strip().lower()
+    if limited := ratelimit.check(
+        request,
+        ("reset-request-ip", ratelimit.client_ip(request), 10, HOUR),
+        ("reset-request-email", email, 3, HOUR),
+    ):
+        return limited
     account = Account.objects.filter(email__iexact=email, is_active=True).first()
     if account:
         code = f"{secrets.randbelow(1_000_000):06d}"
@@ -418,13 +423,7 @@ def request_password_reset(request):
             expires_at=now + timedelta(minutes=10),
         )
         try:
-            send_mail(
-                "Your Lumi Lane password reset code",
-                f"Your password reset code is {code}. It expires in 10 minutes. If you did not request this code, you can ignore this email.",
-                settings.DEFAULT_FROM_EMAIL,
-                [account.email],
-                fail_silently=False,
-            )
+            build_password_reset_email(account, code).send(fail_silently=False)
         except Exception:
             logger.exception("Password reset email failed")
     return JsonResponse({"message": "If an account exists for that email, a six-digit reset code has been sent."})
@@ -437,6 +436,13 @@ def reset_password(request):
     email = str((data or {}).get("email", "")).strip().lower()
     code = str((data or {}).get("code", "")).strip()
     password = str((data or {}).get("password", ""))
+    # Caps guesses per email across every code requested, on top of 5 tries per code.
+    if limited := ratelimit.check(
+        request,
+        ("reset-confirm-ip", ratelimit.client_ip(request), 30, HOUR),
+        ("reset-confirm-email", email, 10, HOUR),
+    ):
+        return limited
     if not email or not re.fullmatch(r"\d{6}", code):
         return JsonResponse({"error": "Enter the email address and six-digit code."}, status=400)
     if len(password) < 8 or len(password) > 128:
