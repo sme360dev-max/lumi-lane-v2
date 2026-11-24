@@ -12,7 +12,10 @@ class RoleTests(TestCase):
             self.assertTrue(Group.objects.get(name=name).permissions.exists(), name)
         foh = Group.objects.get(name="Front of house")
         codes = set(foh.permissions.values_list("codename", flat=True))
-        self.assertEqual(codes, {"view_bookingrequest", "add_bookingrequest", "change_bookingrequest", "view_menuitem"})
+        self.assertEqual(codes, {
+            "view_bookingrequest", "add_bookingrequest", "change_bookingrequest", "view_menuitem",
+            "view_account", "view_order", "change_order",
+        })
 
     def test_existing_role_is_not_overwritten(self):
         from .roles import create_default_roles
@@ -20,7 +23,16 @@ class RoleTests(TestCase):
         manager = Group.objects.get(name="Manager")
         manager.permissions.clear()
         create_default_roles()
-        self.assertFalse(manager.permissions.exists())
+        # Only customer/account permissions are re-added; booking and menu edits are kept as-is.
+        self.assertFalse(manager.permissions.filter(content_type__app_label__in=["bookings", "menu"]).exists())
+
+    def test_sync_default_roles_resets_roles(self):
+        from .roles import sync_default_roles
+
+        manager = Group.objects.get(name="Manager")
+        manager.permissions.clear()
+        sync_default_roles()
+        self.assertTrue(manager.permissions.filter(codename="change_menuitem").exists())
 
     def test_role_permissions_work(self):
         user = User.objects.create_user("sam", password="pw", is_staff=True)
@@ -36,8 +48,8 @@ class PermissionNameTests(TestCase):
         self.assertEqual(friendly_name(Permission.objects.get(codename="change_menuitem")), "Edit menu items & prices")
 
     def test_every_admin_model_is_covered(self):
-        # 7 models x view/add/change/delete
-        self.assertEqual(managed_permissions().count(), 28)
+        # 12 models x view/add/change/delete
+        self.assertEqual(managed_permissions().count(), 48)
 
 
 class StaffAdminTests(TestCase):

@@ -81,3 +81,18 @@ def create_default_roles(**kwargs):
                 if split(p)[0] == "accounts" and split(p)[2] in grants.get(split(p)[:2], ())
             )
         )
+
+
+def sync_default_roles():
+    """Reset every preset role to exactly what ROLES says (used by `bootstrap_prod`/`sync_roles`).
+
+    Unlike `create_default_roles`, this overwrites edits made in the admin, so the
+    roles match the current permission list. Custom roles are left alone.
+    """
+    permissions = list(managed_permissions())
+    for name, (_, grants) in ROLES.items():
+        group, _ = Group.objects.get_or_create(name=name)
+        group.permissions.set(
+            p for p in permissions if split(p)[2] in grants.get(split(p)[:2], ())
+        )
+    return list(ROLES)

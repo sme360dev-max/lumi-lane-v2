@@ -75,7 +75,7 @@ class NavTests(TestCase):
 
     def test_sections_and_active_item(self):
         sections = self.nav_for("/admin/menu/menuitem/3/change/")
-        self.assertEqual([s["title"] for s in sections], [None, "Bookings", "Menu", "Team"])
+        self.assertEqual([s["title"] for s in sections], [None, "Bookings", "Menu", "Customers", "Orders", "Loyalty", "Team"])
         active = [i["name"] for s in sections for i in s["items"] if i["active"]]
         self.assertEqual(active, ["Items & prices"])
 
