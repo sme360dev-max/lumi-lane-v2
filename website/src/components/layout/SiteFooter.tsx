@@ -1,43 +1,67 @@
 import Link from 'next/link';
-import { CtaLink, ctaClass } from '@/components/ui/Button';
-import { ExternalArrow } from '@/components/ui/ExperienceIcons';
+import { ResponsivePicture } from '@/components/ui/ResponsivePicture';
 import { BUSINESS, DIRECTIONS_URL } from '@/data/business';
-import { FOOTER } from '@/data/content';
 import { HEADER_NAV } from '@/data/navigation';
 import { SocialIcon } from './SocialIcon';
 import { FooterMotion } from './FooterMotion';
 
 const socialNames = { instagram: 'Instagram', tiktok: 'TikTok', facebook: 'Facebook' };
 
+/** "7:00am Monday to Saturday, 8:00am Sunday", read straight from the published hours. */
+const OPENS = BUSINESS.hours.map(({ label, time }) => `${time.split(' to ')[0]} ${label}`).join(', ');
+
 export function SiteFooter() {
   return (
     <footer className="site-footer" id="site-footer">
       <FooterMotion>
-        <div className="site-container">
-          <div className="footer-signature">
-            <Link href="/" className="footer-wordmark" aria-label="Back to the Lumi Lane homepage">
-              <span aria-hidden="true">
-                <span>LUMI</span>
-              </span>{' '}
-              <span aria-hidden="true">
-                <span>LANE</span>
-              </span>
-            </Link>
-          </div>
-          <div className="footer-directory">
-            <div>
-              <h2 className="experience-kicker">Find us</h2>
+        <span className="footer-hairline" aria-hidden="true" />
+        <div className="footer-drift" aria-hidden="true">
+          <ResponsivePicture name="coffee" widths={[480]} sizes="300px" width={480} height={480} alt="" />
+          <ResponsivePicture name="choco" widths={[480]} sizes="160px" width={480} height={480} alt="" />
+        </div>
+        <div className="site-container footer-inner">
+          <div className="footer-grid">
+            <div className="footer-brand">
+              <Link href="/" className="footer-wordmark" aria-label="Back to the Lumi Lane homepage">
+                LUMI LANE
+              </Link>
+              <p className="footer-wordmark-sub">{BUSINESS.tagline}</p>
+              <p className="footer-tagline">
+                A coffee house <em>with a long table.</em>
+              </p>
+              <p className="footer-open">Open from {OPENS}.</p>
+              <span className="footer-rule" aria-hidden="true" />
+              <ul className="footer-social" aria-label="Social media">
+                {BUSINESS.social.map(({ id, href, label }) => (
+                  <li key={id}>
+                    <a href={href} target="_blank" rel="noopener noreferrer" aria-label={label} title={socialNames[id]}>
+                      <SocialIcon id={id} />
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <nav className="footer-nav" aria-label="Footer">
+              <h2>Explore</h2>
+              <ul>
+                {HEADER_NAV.map(({ href, label }) => (
+                  <li key={href}>
+                    <Link href={href} className="footer-link">
+                      {label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+
+            <div className="footer-visit">
+              <h2>Visit</h2>
               <address>
                 {BUSINESS.address.line1}
                 <br />
                 {BUSINESS.address.line2}
               </address>
-              <a className={ctaClass({ variant: 'editorial' })} href={DIRECTIONS_URL} target="_blank" rel="noopener noreferrer">
-                Get directions <ExternalArrow />
-              </a>
-            </div>
-            <div>
-              <h2 className="experience-kicker">Opening hours</h2>
               <dl className="footer-hours">
                 {BUSINESS.hours.map(({ label, time }) => (
                   <div key={label}>
@@ -46,34 +70,18 @@ export function SiteFooter() {
                   </div>
                 ))}
               </dl>
-            </div>
-            <div>
-              <h2 className="experience-kicker">Contact</h2>
-              <a className={ctaClass({ variant: 'editorial' })} href={BUSINESS.phone.href}>
-                {BUSINESS.phone.display}
+              <p className="footer-phone">
+                <a className="footer-link" href={BUSINESS.phone.href}>
+                  {BUSINESS.phone.display}
+                </a>
+                <small>Listed number · confirm with venue</small>
+              </p>
+              <a className="footer-link footer-directions" href={DIRECTIONS_URL} target="_blank" rel="noopener noreferrer">
+                Get directions
               </a>
-              <small>Listed number · confirm with venue</small>
-              <p className="footer-brand-note">{FOOTER.tagline.join(' · ')}</p>
             </div>
           </div>
-          <div className="footer-links">
-            <nav className="footer-nav" aria-label="Footer">
-              {HEADER_NAV.map(({ href, label }) => (
-                <CtaLink key={href} href={href} variant="navigation">
-                  {label}
-                </CtaLink>
-              ))}
-            </nav>
-            <ul className="footer-social" aria-label="Social media">
-              {BUSINESS.social.map(({ id, href, label }) => (
-                <li key={id}>
-                  <a href={href} target="_blank" rel="noopener noreferrer" aria-label={label} title={socialNames[id]}>
-                    <SocialIcon id={id} />
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
+
           <div className="footer-utility">
             <small>
               © {new Date().getFullYear()} {BUSINESS.name}
@@ -94,8 +102,8 @@ export function SiteFooter() {
                 .
               </p>
             </details>
-            <a className={ctaClass({ variant: 'editorial' })} href="#main">
-              Back to content <span aria-hidden="true">↑</span>
+            <a className="footer-link footer-top" href="#main">
+              Back to top
             </a>
           </div>
         </div>

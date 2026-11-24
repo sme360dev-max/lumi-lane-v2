@@ -4,15 +4,6 @@
   touch-action: pan-y;
 }
 
-.hero::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  pointer-events: none;
-  background: linear-gradient(180deg, rgb(13 7 3 / 24%), transparent 23%);
-}
-
 .hero-pending .hero-table-wrap {
   visibility: hidden;
   opacity: 0;
@@ -29,10 +20,11 @@
   position: relative;
   z-index: 2;
   display: flex;
-  min-height: 100svh;
+  /* The masthead sits above the hero in the flow, so the stage is one viewport minus the bar. */
+  min-height: calc(100svh - var(--masthead-height, 72px));
   flex-direction: column;
   align-items: center;
-  padding: 7.3rem var(--gutter) clamp(14rem, 62vw, 28rem);
+  padding: 2.9rem var(--gutter) clamp(14rem, 62vw, 28rem);
   text-align: center;
   pointer-events: none;
 }
@@ -335,18 +327,18 @@
 
 @media (min-width: 760px) {
   .hero-copy {
-    padding-top: 7rem;
+    padding-top: 3.2rem;
   }
 }
 
 @media (min-width: 1024px) and (min-aspect-ratio: 11/10) {
   .hero-copy {
-    min-height: max(100svh, 600px);
+    min-height: max(calc(100svh - var(--masthead-height, 72px)), 560px);
     width: min(100%, var(--measure));
     margin-inline: auto;
     align-items: flex-start;
     justify-content: center;
-    padding: 6.5rem var(--gutter) 5rem;
+    padding: 4rem var(--gutter) 4.5rem;
     text-align: left;
   }
 

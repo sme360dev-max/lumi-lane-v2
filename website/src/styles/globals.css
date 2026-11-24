@@ -1,6 +1,7 @@
 @import './fonts.css';
 @import './hero.css';
 @import './editorial.css';
+@import './masthead.css';
 @import './hospitality.css';
 @import './experience.css';
 @import './closing.css';
@@ -26,7 +27,7 @@ picture {
 
 :focus-visible {
   outline: 2px solid currentColor;
-  outline-offset: 4px;
+  outline-offset: 3px;
 }
 
 @media (prefers-reduced-motion: reduce) {

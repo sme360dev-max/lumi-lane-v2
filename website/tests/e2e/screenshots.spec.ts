@@ -8,12 +8,18 @@ test('capture the header at the five review widths', async ({ page }, info) => {
     await page.goto('/loyalty/');
     await page.evaluate(() => document.fonts.ready);
     expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(width);
-    const pill = page.locator('.site-nav-list');
+    const links = page.locator('.site-nav-list');
+    const wordmark = (await page.locator('.site-wordmark').boundingBox())!;
+    expect(Math.abs(wordmark.x + wordmark.width / 2 - width / 2)).toBeLessThan(1);
     if (width >= 1024) {
-      const bounds = (await pill.boundingBox())!;
-      expect(Math.abs(bounds.x + bounds.width / 2 - width / 2)).toBeLessThan(1);
-      expect(bounds.height).toBe(48);
-      await expect(pill.locator('a[aria-current="page"] span')).toHaveCSS('text-decoration-line', 'underline');
+      const bounds = (await links.boundingBox())!;
+      expect(bounds.x + bounds.width).toBeLessThanOrEqual(wordmark.x);
+      expect(bounds.height).toBe(44);
+      // The current page carries the one clay rule, exactly under its word.
+      const word = (await links.locator('a[aria-current="page"] span').boundingBox())!;
+      const rule = (await page.locator('.site-nav-indicator').boundingBox())!;
+      expect(Math.abs(rule.x - word.x)).toBeLessThan(1);
+      expect(Math.abs(rule.width - word.width)).toBeLessThan(1);
     }
     await page.screenshot({
       path: `qa/screenshots/header/${width}.png`,

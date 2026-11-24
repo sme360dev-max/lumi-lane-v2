@@ -18,87 +18,6 @@
   text-transform: uppercase;
 }
 
-.site-account-link {
-  display: inline-flex;
-  min-height: 44px;
-  align-items: center;
-  color: inherit;
-  font-size: 0.67rem;
-  font-weight: 650;
-  letter-spacing: 0.09em;
-  white-space: nowrap;
-  text-transform: uppercase;
-}
-
-.site-account-link:focus-visible {
-  border-radius: 3px;
-}
-
-.site-login-link {
-  position: relative;
-}
-.site-login-link::after {
-  position: absolute;
-  inset: auto 0 9px;
-  height: 1px;
-  background: var(--header-accent);
-  content: '';
-  transform: scaleX(0);
-  transform-origin: left;
-  transition: transform 235ms var(--experience-ease);
-}
-.site-login-link:is(:hover, :focus-visible, [aria-current='page'])::after {
-  transform: scaleX(1);
-}
-.site-login-window {
-  position: relative;
-  display: block;
-  overflow: hidden;
-  line-height: 1.28;
-}
-.site-login-window > span {
-  display: block;
-  transition: transform 250ms var(--experience-ease);
-}
-.site-login-window > span:last-child {
-  position: absolute;
-  inset: 100% 0 auto;
-  color: var(--header-accent);
-}
-.site-login-link:is(:hover, :focus-visible) .site-login-window > span {
-  transform: translateY(-100%);
-}
-
-.site-signup-link {
-  padding: 0;
-  border: 0;
-}
-.site-signup-link:focus-visible {
-  border-radius: 999px;
-}
-.site-signup-pill {
-  display: flex;
-  min-height: 39px;
-  min-width: 6rem;
-  align-items: center;
-  justify-content: center;
-  padding: 0.26rem 0.78rem;
-  border-radius: 999px;
-  background: var(--header-signup);
-  color: #38241c;
-  box-shadow: inset 0 0 0 1px var(--header-signup-line);
-  transform: translate(var(--magnet-x, 0), var(--magnet-y, 0));
-  transition:
-    transform 250ms var(--experience-ease),
-    background-color 200ms;
-}
-.site-signup-link:is(:hover, [aria-current='page']) .site-signup-pill {
-  background: var(--header-signup-hover);
-}
-.site-signup-link:active .site-signup-pill {
-  transform: scale(0.97);
-}
-
 .account-editorial img,
 .cart-line-picture img {
   width: 100%;
@@ -520,7 +439,7 @@
 html:has(.cart-drawer[open]) {
   overflow: hidden;
 }
-html:has(.cart-drawer[open]) :is(body, .site-header[data-home='true']) {
+html:has(.cart-drawer[open]) body {
   padding-inline-end: var(--cart-scrollbar-padding, 0px);
 }
 
@@ -764,14 +683,6 @@ html:has(.cart-drawer[open]) :is(body, .site-header[data-home='true']) {
   }
 }
 
-@media (min-width: 1024px) and (max-width: 1120px) {
-  .site-desktop-account {
-    gap: 0.58rem;
-  }
-  .site-header-actions {
-    gap: 0.58rem;
-  }
-}
 @media (max-width: 720px) {
   .account-page {
     grid-template-columns: minmax(0, 1fr);
@@ -820,28 +731,13 @@ html:has(.cart-drawer[open]) :is(body, .site-header[data-home='true']) {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  :is(
-    .footer-social svg,
-    .site-login-window > span,
-    .site-signup-pill,
-    .cart-drawer,
-    .footer-social a,
-    .cart-close,
-    .account-field input
-  ) {
+  :is(.cart-drawer, .cart-close, .account-field input) {
     transition: none;
   }
-  .site-login-link::after,
   .cart-drawer::backdrop {
     transition: none;
   }
   .cart-drawer-line {
     animation: none;
-  }
-  .site-login-link:is(:hover, :focus-visible) .site-login-window > span {
-    transform: none;
-  }
-  .site-signup-link:active .site-signup-pill {
-    transform: none;
   }
 }

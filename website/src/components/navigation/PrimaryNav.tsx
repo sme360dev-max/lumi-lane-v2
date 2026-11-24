@@ -2,7 +2,8 @@
 
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useRef, useState, type CSSProperties } from 'react';
+import { BUSINESS } from '@/data/business';
 import { HEADER_NAV } from '@/data/navigation';
 import { useMediaQuery } from '@/hooks/useMediaQuery';
 import { AccountActions } from './AccountActions';
@@ -10,6 +11,7 @@ import { MegaMenu } from './MegaMenu';
 import { isActive } from './navStyles';
 
 const DESKTOP = '(min-width: 1024px)';
+const useIsomorphicLayoutEffect = typeof window === 'undefined' ? useEffect : useLayoutEffect;
 
 export function PrimaryNav() {
   const pathname = usePathname() ?? '/';
@@ -22,6 +24,7 @@ export function PrimaryNav() {
   const trigger = useRef<HTMLButtonElement>(null);
   const mobileTrigger = useRef<HTMLButtonElement>(null);
   const nav = useRef<HTMLElement>(null);
+  const panel = useRef<HTMLDivElement>(null);
   const megaOpen = canHover && openOn === pathname;
   const mobileOpen = !desktop && mobileOpenOn === pathname;
 
@@ -59,6 +62,33 @@ export function PrimaryNav() {
     };
   }, [close, megaOpen, mobileOpen]);
 
+  // The active-page underline is one element that slides to whichever link is current.
+  useIsomorphicLayoutEffect(() => {
+    const host = panel.current;
+    const bar = host?.closest<HTMLElement>('.site-header');
+    if (!host || !bar) return;
+    const place = () => {
+      const label = host.querySelector<HTMLElement>('.site-nav-link[aria-current="page"] > span');
+      if (!label || !desktop) {
+        host.dataset.indicator = 'none';
+        return;
+      }
+      // The rule is positioned against the masthead itself (its nearest positioned ancestor).
+      const from = bar.getBoundingClientRect();
+      const to = label.getBoundingClientRect();
+      host.style.setProperty('--indicator-x', `${to.left - from.left}px`);
+      host.style.setProperty('--indicator-y', `${to.bottom - from.top - 1.5}px`);
+      host.style.setProperty('--indicator-width', `${to.width}px`);
+      // Appear in place the first time; slide only between two known positions.
+      host.dataset.indicator = !host.dataset.indicator || host.dataset.indicator === 'none' ? 'placed' : 'sliding';
+    };
+    place();
+    const observer = new ResizeObserver(place);
+    observer.observe(bar);
+    void document.fonts?.ready.then(place);
+    return () => observer.disconnect();
+  }, [pathname, desktop]);
+
   return (
     <nav
       ref={nav}
@@ -85,24 +115,25 @@ export function PrimaryNav() {
       >
         <svg
           viewBox="0 0 24 24"
-          width="22"
-          height="22"
+          width="24"
+          height="24"
           fill="none"
           stroke="currentColor"
-          strokeWidth="1.6"
+          strokeWidth="1.4"
           strokeLinecap="round"
           aria-hidden="true"
         >
-          <path d={mobileOpen ? 'm6 6 12 12M18 6 6 18' : 'M4 8h16M4 16h16'} />
+          <path d={mobileOpen ? 'm6 6 12 12M18 6 6 18' : 'M4 9h16M4 15h16'} />
         </svg>
       </button>
-      <div className="site-nav-panel" id="site-nav-panel">
+      <div ref={panel} className="site-nav-panel" id="site-nav-panel">
         <ul className="site-nav-list" id="site-nav-items">
-          {HEADER_NAV.map(({ href, label }) => {
+          {HEADER_NAV.map(({ href, label }, index) => {
             const active = isActive(pathname, href) ? 'page' : undefined;
+            const order = { '--i': index } as CSSProperties;
             if (href === '/menu/') {
               return (
-                <li key={href}>
+                <li key={href} style={order}>
                   <button
                     ref={trigger}
                     type="button"
@@ -135,7 +166,7 @@ export function PrimaryNav() {
               );
             }
             return (
-              <li key={href}>
+              <li key={href} style={order}>
                 <Link href={href} className="site-nav-link" aria-current={active} onClick={close}>
                   <span>{label}</span>
                 </Link>
@@ -143,9 +174,20 @@ export function PrimaryNav() {
             );
           })}
         </ul>
+        <span className="site-nav-indicator" aria-hidden="true" />
         <div className="site-mobile-account">
           <AccountActions pathname={pathname} onNavigate={close} />
         </div>
+        <p className="site-nav-venue">
+          <span>
+            {BUSINESS.address.line1} {BUSINESS.address.line2}
+          </span>
+          {BUSINESS.hours.map(({ label, time }) => (
+            <span key={label}>
+              {label}, {time}
+            </span>
+          ))}
+        </p>
       </div>
     </nav>
   );

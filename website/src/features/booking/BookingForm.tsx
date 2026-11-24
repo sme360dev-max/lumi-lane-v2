@@ -4,6 +4,7 @@ import { useRef, useState, type FormEvent } from 'react';
 import { BUSINESS } from '@/data/business';
 import { BOOK, VISIT } from '@/data/content';
 import { CtaLink, ctaClass } from '@/components/ui/Button';
+import { Parallax } from '@/components/motion/Parallax';
 import { ResponsivePicture } from '@/components/ui/ResponsivePicture';
 import { API_BASE_URL, createRequestKey, readAuthToken } from '@/lib/api';
 import { BookingDate } from './BookingDate';
@@ -156,14 +157,29 @@ export function BookingForm() {
     <div className="lane-page lane-book">
       <div className="site-container lane-book-layout">
         <header className="lane-book-intro">
-          <p className="lane-kicker">{BOOK.eyebrow} · Lightsview</p>
-          <h1 className="lane-title">
-            Reserve Your <em>Table.</em>
-          </h1>
-          <p>{BOOK.intro}</p>
-          <p id="booking-note" className="lane-book-note">
-            Send a table request. The venue team will contact you to confirm.
-          </p>
+          <div className="lane-book-heading">
+            <p className="lane-kicker">{BOOK.eyebrow} · Lightsview</p>
+            <h1 className="lane-title">
+              <span className="title-line">
+                <span>Reserve Your</span>
+              </span>{' '}
+              <span className="title-line">
+                <em>Table.</em>
+              </span>
+            </h1>
+          </div>
+          <div className="lane-book-lede">
+            <p>{BOOK.intro}</p>
+            <p id="booking-note" className="lane-book-note">
+              Send a table request. The venue team will contact you to confirm.
+            </p>
+            <p className="lane-book-call">
+              <a href={BUSINESS.phone.href} className={ctaClass({ variant: 'editorial', className: 'lane-text-link' })}>
+                Call {BUSINESS.phone.display}
+              </a>
+              <span className="lane-book-phone-note">Listed phone number. Confirm directly with Lumi Lane.</span>
+            </p>
+          </div>
         </header>
         <form
           noValidate
@@ -273,23 +289,19 @@ export function BookingForm() {
             {submitError && <p role="alert" className="booking-error">{submitError}</p>}
           </div>
         </form>
-        <aside className="lane-book-aside">
-          <figure>
+        <figure className="lane-book-photo">
+          <Parallax className="arch-frame" travel={40}>
             <ResponsivePicture
               name="storefront"
-              widths={[480, 800]}
-              sizes="(min-width: 768px) 36vw, 89vw"
+              widths={[480, 800, 1200]}
+              sizes="(min-width: 961px) 34vw, 89vw"
               width={1360}
               height={972}
               alt={VISIT.storefrontAlt}
             />
-          </figure>
-          <p>{BOOK.subIntro}</p>
-          <a href={BUSINESS.phone.href} className={ctaClass({ variant: 'editorial', className: 'lane-text-link' })}>
-            Call {BUSINESS.phone.display}
-          </a>
-          <p className="lane-book-phone-note">Listed phone number. Confirm directly with Lumi Lane.</p>
-        </aside>
+          </Parallax>
+          <figcaption>Fosters Road, Lightsview</figcaption>
+        </figure>
       </div>
     </div>
   );

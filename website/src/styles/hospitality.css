@@ -34,12 +34,31 @@
   line-height: 1.55;
 }
 .lane-kicker {
-  margin-bottom: 0.75rem;
+  margin-bottom: 0.85rem;
   color: var(--lane-clay);
-  font-size: 0.68rem;
-  font-weight: 650;
-  letter-spacing: 0.17em;
-  text-transform: uppercase;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  line-height: 1.4;
+}
+
+/* The arch: the V2 photo frame, after the lit alcoves of the room itself. */
+.arch-frame {
+  overflow: hidden;
+  border-radius: 999px 999px 0 0;
+  background: var(--lane-sand);
+}
+.arch-frame img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.lane-page figcaption {
+  padding-block: 0.7rem 0;
+  color: var(--lane-muted);
+  font-size: 0.8125rem;
+  line-height: 1.4;
 }
 .lane-text-link {
   --cta-editorial: var(--lane-clay);
@@ -52,26 +71,6 @@
 .lane-page :is(input, select, textarea):focus-visible {
   outline: 2px solid var(--lane-clay);
   outline-offset: 2px;
-}
-
-.site-cart-link {
-  position: relative;
-}
-.lane-bag-count {
-  position: absolute;
-  inset: -4px -6px auto auto;
-  min-width: 18px;
-  height: 18px;
-  padding: 0 3px;
-  display: grid;
-  place-items: center;
-  border-radius: 20px;
-  background: var(--header-badge);
-  color: var(--header-badge-ink);
-  font-size: 0.64rem;
-  font-weight: 700;
-  line-height: 1;
-  font-variant-numeric: tabular-nums;
 }
 
 .lane-stepper {
@@ -121,7 +120,7 @@
 }
 
 .lane-menu {
-  padding: clamp(1.75rem, 4vw, 3.1rem) 0 clamp(3rem, 7vw, 7rem);
+  padding: clamp(2rem, 4.5vw, 3.75rem) 0 clamp(3rem, 7vw, 7rem);
 }
 .lane-menu-intro {
   display: flex;
@@ -129,38 +128,58 @@
   justify-content: space-between;
   flex-wrap: wrap;
   gap: 0.5rem 2rem;
-  margin-bottom: clamp(1.15rem, 2.3vw, 2.05rem);
+  margin-bottom: clamp(1.4rem, 2.8vw, 2.4rem);
 }
 .lane-menu-intro .lane-title {
   font-size: clamp(3.15rem, 6.2vw, 6rem);
 }
 .lane-menu-intro p {
   max-width: 34ch;
+  padding-bottom: 0.6rem;
   color: var(--lane-muted);
 }
+
+/* Category tabs: serif words on a hairline, the current one underlined in clay. */
 .lane-menu-tabs {
   display: flex;
-  gap: 0.28rem 1.05rem;
-  flex-wrap: wrap;
-  padding: 0.45rem 0;
-  border-block: 1px solid var(--lane-rule);
+  gap: 0 clamp(1.15rem, 3.2vw, 2.75rem);
+  overflow-x: auto;
+  border-bottom: 1px solid var(--lane-rule);
+  scrollbar-width: none;
+}
+.lane-menu-tabs::-webkit-scrollbar {
+  display: none;
 }
 .lane-menu-tabs button {
-  min-height: 44px;
-  padding: 0.5rem 0.75rem;
+  position: relative;
+  flex: none;
+  min-height: 48px;
+  padding: 0.6rem 0.1rem 0.72rem;
+  color: var(--lane-muted);
+  font: 400 clamp(1.02rem, 1.5vw, 1.22rem) / 1.2 var(--font-heading);
   white-space: nowrap;
-  border-radius: 3px;
-  font-size: 0.9rem;
+  transition: color 300ms ease-out;
 }
-.lane-menu-tabs button[aria-selected='true'] {
-  background: var(--lane-dark);
-  color: var(--lane-surface);
+.lane-menu-tabs button::after {
+  content: '';
+  position: absolute;
+  inset: auto 0 0;
+  height: 1.5px;
+  background: var(--lane-clay);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 450ms cubic-bezier(0.22, 1, 0.36, 1);
 }
-.lane-menu-tabs button[aria-selected='true']:focus-visible {
-  outline-color: var(--lane-clay);
+.lane-menu-tabs button:is(:hover, [aria-selected='true']) {
+  color: var(--lane-ink);
 }
-.lane-menu-tabs button:hover:not([aria-selected='true']) {
-  background: #eadccb;
+.lane-menu-tabs button[aria-selected='true']::after {
+  transform: scaleX(1);
+}
+.lane-menu-tabs button:focus-visible {
+  border-radius: 2px;
+  outline: 2px solid var(--lane-clay);
+  outline-offset: -3px;
 }
 
 .lane-menu-tools {
@@ -168,7 +187,7 @@
   grid-template-columns: minmax(0, 1fr) auto auto;
   align-items: center;
   gap: 0.6rem;
-  padding-block: 1.05rem 0.55rem;
+  padding-block: 1.15rem 0.55rem;
 }
 .lane-menu-search,
 .lane-filter-trigger,
@@ -180,7 +199,7 @@
   min-height: 46px;
   padding-inline: 0.85rem;
   border: 1px solid var(--lane-rule);
-  border-radius: 4px;
+  border-radius: 2px;
   background: var(--lane-surface);
   font-size: 0.87rem;
 }
@@ -243,107 +262,141 @@
   border-color: transparent;
   text-decoration: underline;
 }
+
+/* The printed menu: two columns of sections, each dish a name, a dotted leader and its price. */
 .lane-editorial-columns {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   align-items: start;
-  gap: clamp(1.55rem, 4vw, 3.9rem) clamp(1.75rem, 6vw, 6.5rem);
-  padding-block: 1.15rem 1rem;
+  gap: clamp(2.1rem, 4.4vw, 3.9rem) clamp(2.25rem, 7vw, 7rem);
+  padding-block: 1.35rem 1rem;
 }
 .lane-menu-group-header {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
   flex-wrap: wrap;
-  gap: 0.45rem 1rem;
-  padding-block-end: 0.55rem;
+  gap: 0.3rem 1rem;
+  margin-block-end: 0.3rem;
+  padding-block-end: 0.62rem;
+  border-bottom: 1px solid var(--lane-rule);
 }
 .lane-menu-group-header h3,
 .lane-mixed-heading {
   color: var(--lane-clay);
-  font-size: clamp(1.65rem, 2.7vw, 2.3rem);
+  font-size: clamp(1.55rem, 2.4vw, 2rem);
+  font-style: italic;
 }
 .lane-mixed-heading {
-  margin-block: 1.15rem 0.6rem;
+  margin-block: 1.15rem 0.3rem;
+  padding-block-end: 0.62rem;
+  border-bottom: 1px solid var(--lane-rule);
 }
 .lane-menu-group-header p {
   color: var(--lane-muted);
-  font-size: 0.85rem;
+  font-size: 0.8125rem;
+  font-style: italic;
 }
 .lane-menu-list--mixed {
   columns: 2;
-  column-gap: clamp(1.75rem, 6vw, 6.5rem);
+  column-gap: clamp(2.25rem, 7vw, 7rem);
 }
 .lane-menu-item {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
   align-items: start;
-  gap: 0.38rem 0.75rem;
-  padding: 0.78rem 0 0.6rem;
+  column-gap: 1rem;
   min-width: 0;
+  padding-block: 0.82rem 0.3rem;
   break-inside: avoid;
-  border-top: 1px solid var(--lane-rule);
 }
 .lane-item-text {
+  display: contents;
+}
+.lane-menu-item .lane-item-section {
+  grid-column: 1 / -1;
+  margin-bottom: 0.1rem;
+  color: var(--lane-clay);
+  font-size: 0.75rem;
+  line-height: 1.3;
+}
+.lane-item-line {
+  display: flex;
+  grid-column: 1 / -1;
+  align-items: baseline;
+  gap: 0.55rem;
   min-width: 0;
 }
-.lane-item-text h4 {
-  font: 450 clamp(1.08rem, 1.55vw, 1.38rem) / 1.16 var(--font-heading);
+.lane-item-line h4 {
+  font: 500 clamp(1.06rem, 1.4vw, 1.2rem) / 1.25 var(--font-heading);
+  letter-spacing: -0.01em;
 }
-.lane-item-text p:not(.lane-item-section) {
-  margin-top: 0.25rem;
-  color: var(--lane-muted);
-  font-size: 0.86rem;
+.lane-item-leader {
+  flex: 1 1 1.25rem;
+  min-width: 1.25rem;
+  border-bottom: 1px dotted rgb(40 36 31 / 45%);
+  transform: translateY(-0.22em);
 }
-.lane-item-section {
-  margin-bottom: 0.22rem;
-  color: var(--lane-clay);
-  font-size: 0.63rem;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-}
-.lane-item-controls {
-  grid-column: 1 / -1;
+.lane-menu-item .lane-item-price {
   display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  flex-wrap: wrap;
-  gap: 0.35rem;
-}
-.lane-item-controls .lane-stepper {
-  grid-template-columns: 38px minmax(1.45rem, auto) 38px;
-  min-height: 36px;
-  background: transparent;
-}
-.lane-item-controls .lane-stepper button {
-  width: 38px;
-  height: 36px;
-}
-@media (min-width: 760px) {
-  .lane-menu-item[data-compact-row='true'] .lane-item-text {
-    grid-area: 1 / 1 / span 2 / 2;
-  }
-  .lane-menu-item[data-compact-row='true'] .lane-item-price {
-    grid-area: 1 / 2;
-  }
-  .lane-menu-item[data-compact-row='true'] .lane-item-controls {
-    grid-area: 2 / 2;
-  }
-}
-.lane-item-price {
-  display: flex;
-  flex-direction: column;
-  align-items: end;
-  font-weight: 670;
-  font-size: 0.88rem;
+  flex: none;
+  align-items: baseline;
+  gap: 0 0.9rem;
+  font: 500 0.95rem / 1.25 var(--font-body);
+  font-variant-numeric: tabular-nums;
   white-space: nowrap;
 }
-.lane-item-price:has(> [data-price]) {
+/* A single printed price reads as one figure ("$21.9"), not as two spaced parts. */
+.lane-menu-item .lane-item-price:has(> [data-price]) {
   display: block;
 }
 .lane-item-price small {
-  font-size: 0.67rem;
   color: var(--lane-muted);
+  font-size: 0.72rem;
+  font-weight: 400;
+}
+.lane-menu-item .lane-item-description {
+  grid-column: 1;
+  max-width: 46ch;
+  margin-top: 0.22rem;
+  color: var(--lane-muted);
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+.lane-item-controls {
+  display: flex;
+  grid-column: 2;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.1rem;
+}
+.lane-menu-item[data-compact-row='false'] .lane-item-controls {
+  grid-column: 1 / -1;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: 0.4rem;
+}
+
+/* Ordering stays on every line, but quietly: a plus at rest, minus and count once a dish is in the bag. */
+.lane-item-controls .lane-stepper {
+  grid-template-columns: 36px minmax(1.2rem, auto) 36px;
+  min-height: 40px;
+  border: 0;
+  background: transparent;
+  font-size: 0.9rem;
+}
+.lane-item-controls .lane-stepper button {
+  width: 36px;
+  height: 40px;
+  border-radius: 50%;
+  font-size: 1.25rem;
+}
+.lane-item-controls .lane-stepper button:enabled:hover {
+  background: transparent;
+  color: var(--lane-ink);
+}
+.lane-item-controls .lane-stepper:has(> button:first-child:disabled) > :is(button:first-child, output) {
+  opacity: 0;
 }
 .lane-item-option {
   min-width: 0;
@@ -352,8 +405,9 @@
 .lane-favorite {
   display: grid;
   width: 36px;
-  height: 39px;
+  height: 40px;
   place-items: center;
+  border-radius: 50%;
   color: var(--lane-clay);
 }
 .lane-favorite svg {
@@ -366,6 +420,10 @@
 .lane-favorite:hover svg {
   transform: scale(1.15);
 }
+.lane-menu-item :is(.lane-stepper button, .lane-favorite):focus-visible {
+  outline: 2px solid var(--lane-clay);
+  outline-offset: -2px;
+}
 .lane-editorial-columns > .lane-menu-note {
   grid-column: 1 / -1;
 }
@@ -376,7 +434,7 @@
   width: 100%;
   min-height: 42px;
   border: 1px solid var(--lane-rule);
-  border-radius: 3px;
+  border-radius: 2px;
   background: var(--lane-surface);
   padding: 0.4rem 0.55rem;
   font-size: 0.82rem;
@@ -388,13 +446,14 @@
 .lane-menu-note,
 .lane-menu-pricing {
   margin-block: 1rem 2.25rem;
-  padding: 1rem 1.15rem;
-  background: #ede0ce;
+  padding: 1.1rem 1.25rem;
+  border: 1px solid var(--lane-rule);
 }
 .lane-menu-note h3,
 .lane-menu-pricing h3 {
-  font-size: 1.45rem;
   margin-bottom: 0.3rem;
+  font-size: 1.4rem;
+  font-style: italic;
 }
 .lane-menu-note p,
 .lane-menu-pricing p {
@@ -411,6 +470,7 @@
   justify-content: space-between;
   gap: 0.5rem;
   padding-block: 0.25rem;
+  font-variant-numeric: tabular-nums;
 }
 .lane-menu-pricing p {
   grid-column: 1 / -1;
@@ -565,138 +625,142 @@
 }
 
 .lane-visit-arrival {
-  padding-top: clamp(2.25rem, 5vw, 4.5rem);
-}
-.lane-visit-intro {
-  display: flex;
-  justify-content: space-between;
-  align-items: end;
-  flex-wrap: wrap;
-  gap: 1rem 2rem;
-  margin-bottom: 1.5rem;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 0.84fr);
+  align-items: start;
+  gap: 2.5rem clamp(2rem, 6.5vw, 6.5rem);
+  padding-block: clamp(2.4rem, 5.5vw, 5rem) clamp(2.75rem, 6vw, 5.5rem);
 }
 .lane-visit-intro .lane-title {
-  font-size: clamp(3.45rem, 8.3vw, 7.8rem);
+  font-size: clamp(3.45rem, 7.7vw, 7.65rem);
 }
-.lane-visit-intro h1 + p {
-  margin-top: 0.9rem;
+.lane-visit-deck,
+.lane-about-deck {
+  margin-top: 1.1rem;
+  color: var(--lane-clay);
+  font: italic 400 clamp(1.3rem, 2.1vw, 1.85rem) / 1.25 var(--font-heading);
+  letter-spacing: -0.015em;
+}
+
+/* Address, hours and phone as one ruled block: quiet labels left, the facts right. */
+.lane-facts {
+  margin-top: clamp(1.75rem, 3.4vw, 2.75rem);
+  border-top: 1px solid var(--lane-rule);
+}
+.lane-facts > div {
+  display: grid;
+  grid-template-columns: minmax(4.75rem, 0.26fr) minmax(0, 1fr);
+  align-items: baseline;
+  gap: 0.2rem 1.5rem;
+  padding-block: 1.05rem;
+  border-bottom: 1px solid var(--lane-rule);
+}
+.lane-facts dt {
   color: var(--lane-muted);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  line-height: 1.5;
+}
+.lane-facts dd {
+  font-size: clamp(1rem, 1.25vw, 1.0875rem);
+  line-height: 1.5;
+  font-variant-numeric: tabular-nums;
+}
+.lane-facts address {
+  font-style: normal;
+}
+.lane-facts-hours li {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0 1.25rem;
+  max-width: 26rem;
+}
+.lane-facts small {
+  display: block;
+  max-width: 44ch;
+  margin-top: 0.4rem;
+  color: var(--lane-muted);
+  font-size: 0.8125rem;
+  line-height: 1.5;
+}
+.lane-phone {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  margin-block: -0.6rem;
+  text-decoration: underline;
+  text-decoration-color: var(--lane-clay);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.3em;
 }
 .lane-visit-actions {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.55rem;
+  align-items: center;
+  gap: 0.5rem 1.5rem;
+  margin-top: 1.75rem;
 }
-.lane-visit-photo {
-  border-bottom: 1px solid var(--lane-rule);
+.lane-visit-photo .arch-frame,
+.lane-about-architecture .arch-frame {
+  aspect-ratio: 4 / 5;
+  max-height: min(46rem, 82vh);
+  margin-inline-start: auto;
 }
-.lane-visit-photo img {
-  display: block;
-  width: 100%;
-  height: min(49vw, 586px);
-  object-fit: cover;
-  object-position: 50% 61%;
-}
-.lane-visit-photo figcaption,
-.lane-about-architecture figcaption {
-  padding-block: 0.62rem;
-  color: var(--lane-muted);
-  font-size: 0.72rem;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
+.lane-visit-photo img,
+.lane-about-architecture img {
+  object-position: 58% 62%;
 }
 .lane-visit-details {
   display: grid;
-  grid-template-columns: minmax(0, 1.04fr) minmax(0, 0.96fr);
-  gap: clamp(1.5rem, 6vw, 6rem);
-  padding-block: clamp(2.8rem, 7vw, 6rem);
+  grid-template-columns: minmax(0, 1fr) minmax(0, 0.84fr);
+  align-items: start;
+  gap: 2.5rem clamp(2rem, 6.5vw, 6.5rem);
+  padding-block: clamp(2.5rem, 5.5vw, 5rem) clamp(3rem, 7vw, 6.5rem);
+  border-top: 1px solid var(--lane-rule);
 }
-.lane-visit-address address {
-  margin-block: 1rem 1.35rem;
-  font: 400 1.3rem / 1.4 var(--font-body);
+.lane-visit-details h2 {
+  font-size: clamp(1.95rem, 3.2vw, 3rem);
 }
-.lane-visit-address h3 {
-  margin-bottom: 0.45rem;
-  font-size: 1.5rem;
-}
-.lane-visit-address > p:not(.lane-kicker) {
+.lane-visit-way > p {
   max-width: 48ch;
+  margin-block: 0.9rem 0.6rem;
   color: var(--lane-muted);
 }
-.lane-visit-address .lane-text-link {
-  display: inline-flex;
-  align-items: center;
-  margin-top: 0.55rem;
-}
-.lane-visit-hours {
-  align-self: start;
-  background: #e6cfb5;
-  padding: clamp(1.15rem, 3.4vw, 3rem);
-  border-radius: 3.2rem 3.2rem 4px 4px;
-}
-.lane-visit-hours h2 {
-  font-size: clamp(1.95rem, 3vw, 3rem);
-}
-.lane-visit-hours dl {
+.lane-visit-social ul {
   margin-top: 1.1rem;
+  border-top: 1px solid var(--lane-rule);
 }
-.lane-visit-hours dl > div {
+.lane-visit-social li {
+  border-bottom: 1px solid var(--lane-rule);
+}
+.lane-visit-social a {
   display: flex;
-  flex-wrap: wrap;
+  min-height: 52px;
+  align-items: baseline;
   justify-content: space-between;
-  gap: 0.25rem 1.25rem;
-  padding-block: 0.66rem;
-  border-top: 1px solid rgb(83 53 34 / 24%);
+  gap: 1rem;
+  padding-block: 0.85rem;
+  transition: color 300ms ease-out;
 }
-.lane-visit-hours dd {
-  font-variant-numeric: tabular-nums;
-}
-.lane-visit-hours > p {
-  margin-top: 0.65rem;
+.lane-visit-social a > span:last-child:not(:first-child) {
   color: var(--lane-muted);
-  font-size: 0.8rem;
+  font-size: 0.875rem;
 }
-.lane-visit-contact {
-  padding-block: clamp(2.1rem, 6vw, 5.25rem);
-  background: #dfc5a8;
-}
-.lane-visit-contact > div {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1.1rem 3rem;
-}
-.lane-phone {
-  display: inline-block;
-  margin: 0.7rem 0 0.4rem;
-  text-underline-offset: 0.25em;
-  text-decoration: underline;
-}
-.lane-visit-contact p {
-  color: var(--lane-muted);
-  font-size: 0.8rem;
-}
-.lane-visit-contact li {
-  border-top: 1px solid rgb(83 53 34 / 22%);
-}
-.lane-visit-contact li:last-child {
-  border-bottom: 1px solid rgb(83 53 34 / 22%);
-}
-.lane-visit-contact li a {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  min-height: 44px;
-}
-.lane-visit-contact li a:hover {
+.lane-visit-social a:hover {
   color: var(--lane-clay);
+}
+.lane-visit-social a:focus-visible {
+  outline: 2px solid var(--lane-clay);
+  outline-offset: 2px;
 }
 
 .lane-about-opening {
   display: grid;
-  grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr);
-  column-gap: clamp(1.5rem, 5vw, 5rem);
+  grid-template-columns: minmax(0, 1fr) minmax(0, 0.84fr);
+  column-gap: clamp(2rem, 6.5vw, 6.5rem);
   align-items: center;
-  padding-block: clamp(2.4rem, 6vw, 6.3rem);
+  padding-block: clamp(2.4rem, 5.5vw, 5rem) clamp(2.75rem, 6vw, 5.5rem);
 }
 .lane-about-intro {
   position: relative;
@@ -707,20 +771,8 @@
 }
 .lane-about-intro p:not(.lane-kicker):not(.lane-about-deck) {
   max-width: 44ch;
+  margin-top: 0.9rem;
   color: var(--lane-muted);
-}
-.lane-about-deck {
-  margin: 1.3rem 0 0.52rem;
-  font: 400 clamp(1.22rem, 2.2vw, 2.15rem) / 1.2 var(--font-body);
-}
-.lane-about-architecture {
-  margin-top: 0.75rem;
-}
-.lane-about-architecture img {
-  display: block;
-  width: 100%;
-  height: auto;
-  border-radius: 5.2rem 5.2rem 0 0;
 }
 .lane-about-coffee {
   background: #e5d2b9;
@@ -736,7 +788,7 @@
   width: min(100%, 370px);
   justify-self: center;
   background: #d9bc99;
-  border-radius: 48% 48% 4px 4px;
+  border-radius: 999px 999px 0 0;
   padding: clamp(0.6rem, 2vw, 1.5rem);
 }
 .lane-coffee-photo img,
@@ -813,35 +865,74 @@
 }
 
 .lane-book {
-  padding-block: clamp(2.2rem, 6vw, 5.3rem);
+  padding-block: clamp(2.2rem, 5.5vw, 5rem) clamp(2.75rem, 6vw, 5.5rem);
 }
 .lane-book-layout {
   display: grid;
   grid-template-columns: minmax(0, 0.78fr) minmax(0, 1.22fr);
-  grid-template-rows: auto 1fr;
-  gap: 1.5rem clamp(2rem, 7vw, 7rem);
-  align-items: start;
+  gap: clamp(1.75rem, 3.2vw, 2.75rem) clamp(2rem, 6.5vw, 6.5rem);
+}
+/* The heading and its supporting copy share one baseline above the photo and the form. */
+.lane-book-intro {
+  display: grid;
+  grid-column: 1 / -1;
+  grid-template-columns: subgrid;
+  align-items: end;
+  align-items: last baseline;
 }
 .lane-book-intro .lane-title {
-  font-size: clamp(3.05rem, 6.15vw, 6rem);
+  font-size: clamp(2.7rem, 4.7vw, 4.7rem);
 }
-.lane-book-intro p:not(.lane-kicker) {
-  max-width: 39ch;
-  margin-top: 0.8rem;
+.lane-book-intro .title-line {
+  white-space: nowrap;
+}
+.lane-book-lede {
+  display: grid;
+  gap: 0.75rem;
+  max-width: 34rem;
   color: var(--lane-muted);
 }
-.lane-book-intro .lane-book-note {
-  padding-left: 0.74rem;
-  border-left: 2px solid var(--lane-clay);
-  font-size: 0.9rem;
+.lane-book-lede .lane-book-note {
+  padding-left: 0.85rem;
+  border-left: 1px solid var(--lane-clay);
+  font-size: 0.9375rem;
+}
+.lane-book-call {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0 1rem;
+}
+.lane-book-call .lane-book-phone-note {
+  margin-top: 0;
+}
+.lane-book-photo {
+  display: flex;
+  grid-column: 1;
+  flex-direction: column;
+  min-height: 30rem;
+}
+.lane-book-photo .arch-frame {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+}
+/* Oversized by the parallax travel so the photo can drift without exposing an edge. */
+.parallax-layer {
+  position: absolute;
+  inset: -20px 0;
+  will-change: transform;
+}
+.lane-book-photo img {
+  object-position: 60% 60%;
 }
 .lane-book-form {
   grid-column: 2;
-  grid-row: 1 / span 2;
+  grid-row: 2;
   padding: clamp(1rem, 3.2vw, 2.5rem);
   background: var(--lane-surface);
   border: 1px solid var(--lane-rule);
-  border-radius: 5px;
+  border-radius: 2px;
 }
 .lane-book-form fieldset + fieldset {
   margin-top: 1.45rem;
@@ -1001,28 +1092,6 @@
   gap: 0.55rem;
   margin-top: 1.15rem;
 }
-.lane-book-aside {
-  max-width: 400px;
-}
-.lane-book-aside figure {
-  margin-bottom: 0.72rem;
-}
-.lane-book-aside img {
-  display: block;
-  width: 100%;
-  aspect-ratio: 2.4;
-  object-fit: cover;
-  object-position: 50% 54%;
-  border-radius: 3.2rem 3.2rem 0 0;
-}
-.lane-book-aside p {
-  color: var(--lane-muted);
-}
-.lane-book-aside .lane-text-link {
-  display: inline-flex;
-  align-items: center;
-  margin-top: 0.35rem;
-}
 .lane-book-summary {
   max-width: 770px;
 }
@@ -1048,25 +1117,87 @@
 
 @media (max-width: 960px) {
   .lane-book-layout {
-    grid-template-columns: 1fr;
-    grid-template-rows: auto;
+    grid-template-columns: minmax(0, 1fr);
   }
-  .lane-book-form {
+  .lane-book-intro {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: 1.1rem;
+  }
+  .lane-book-form,
+  .lane-book-photo {
     grid-column: auto;
     grid-row: auto;
+  }
+  /* Stacked, the photo keeps the proportions of an arch instead of stretching into a dome. */
+  .lane-book-photo {
+    width: min(100%, 27rem);
+    min-height: 0;
+  }
+  .lane-book-photo .arch-frame {
+    flex: none;
+    aspect-ratio: 4 / 5;
   }
   .lane-about-opening {
     column-gap: 1.5rem;
   }
 }
 
-@media (max-width: 650px) {
+@media (max-width: 760px) {
+  .lane-visit-arrival,
+  .lane-visit-details,
+  .lane-about-opening {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .lane-visit-photo,
+  .lane-about-architecture {
+    width: min(100%, 27rem);
+  }
+  .lane-visit-photo .arch-frame,
+  .lane-about-architecture .arch-frame {
+    max-height: none;
+    margin-inline: 0;
+  }
+}
+
+/* All five categories stay on one line on a phone. */
+@media (max-width: 420px) {
   .lane-menu-tabs {
-    column-gap: 0.2rem;
+    column-gap: 0.7rem;
   }
   .lane-menu-tabs button {
-    padding-inline: 0.45rem;
-    font-size: 0.8rem;
+    font-size: 1rem;
+  }
+}
+@media (max-width: 370px) {
+  .lane-menu-tabs {
+    column-gap: 0.6rem;
+  }
+  .lane-menu-tabs button {
+    font-size: 0.92rem;
+  }
+}
+
+@media (max-width: 650px), (pointer: coarse) {
+  .lane-item-controls .lane-stepper {
+    grid-template-columns: 44px minmax(1.2rem, auto) 44px;
+    min-height: 44px;
+  }
+  .lane-item-controls .lane-stepper button,
+  .lane-favorite {
+    width: 44px;
+    height: 44px;
+  }
+}
+
+@media (max-width: 650px) {
+  /* On a phone the unused minus and count give their width back to the description. */
+  .lane-item-controls .lane-stepper:has(> button:first-child:disabled) {
+    grid-template-columns: 0 0 44px;
+  }
+  .lane-item-controls .lane-stepper:has(> button:first-child:disabled) > :is(button:first-child, output) {
+    width: 0;
+    padding: 0;
+    overflow: hidden;
   }
   .lane-menu-tools {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -1085,12 +1216,8 @@
   .lane-menu-list--mixed {
     columns: 1;
   }
-  .lane-item-controls .lane-stepper button {
-    height: 44px;
-  }
-  .lane-favorite {
-    height: 44px;
-    width: 44px;
+  .lane-menu-pricing {
+    grid-template-columns: minmax(0, 1fr);
   }
   .lane-filter-dialog {
     inset: auto 0 0;
@@ -1102,25 +1229,16 @@
   .lane-filter-dialog[open] {
     animation-name: lane-sheet;
   }
-  .lane-visit-details,
-  .lane-visit-contact > div,
-  .lane-about-opening,
   .lane-about-coffee > div,
   .lane-about-kitchen,
   .lane-about-bar > div {
     grid-template-columns: minmax(0, 1fr);
   }
-  .lane-visit-photo img {
-    height: auto;
-  }
   .lane-about-opening {
-    row-gap: 1.12rem;
+    row-gap: 1.75rem;
   }
   .lane-about-intro .lane-title {
     white-space: normal;
-  }
-  .lane-about-architecture img {
-    border-radius: 3.4rem 3.4rem 0 0;
   }
   .lane-about-coffee > div {
     gap: 1.2rem;
@@ -1128,6 +1246,9 @@
   .lane-coffee-photo {
     width: min(68%, 275px);
     justify-self: start;
+  }
+  .lane-facts > div {
+    grid-template-columns: minmax(0, 1fr);
   }
   .lane-book-visit {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -1139,13 +1260,13 @@
   .lane-book-fields {
     grid-template-columns: minmax(0, 1fr);
   }
-  .lane-book-aside {
-    width: 100%;
-  }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .lane-stepper button {
+  .lane-stepper button,
+  .lane-menu-tabs button,
+  .lane-menu-tabs button::after,
+  .lane-visit-social a {
     transition: none;
   }
   .lane-stepper output,

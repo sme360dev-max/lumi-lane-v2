@@ -17,7 +17,11 @@ export default function MenuPage() {
         <div className="site-container">
           <header className="lane-menu-intro">
             <h1 className="lane-title">
-              The <em>menu.</em>
+              <span className="title-line">
+                <span>
+                  The <em>menu.</em>
+                </span>
+              </span>
             </h1>
             <p>{MENU_PAGE.intro}</p>
           </header>

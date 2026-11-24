@@ -28,28 +28,31 @@ export function MenuItemRow({
     <li className="lane-menu-item" data-item-id={item.id} data-compact-row={choices.length === 1 && !showSection}>
       <div className="lane-item-text">
         {showSection && <p className="lane-item-section">{section}</p>}
-        <h4>{item.name}</h4>
-        {description && <p>{description}</p>}
+        <div className="lane-item-line">
+          <h4>{item.name}</h4>
+          <span className="lane-item-leader" aria-hidden="true" />
+          {item.kind === 'std' ? (
+            <p className="lane-item-price">
+              {item.price.startsWith('$') ? null : '$'}
+              <span data-price>{item.price}</span>
+            </p>
+          ) : item.kind === 'wine' ? (
+            <p className="lane-item-price">
+              <span>
+                <small>Glass</small> {item.glass}
+              </span>
+              <span>
+                <small>Bottle</small> {item.bottle}
+              </span>
+            </p>
+          ) : (
+            <p className="lane-item-price">
+              <small>From</small> {money(Math.min(...choices.map(({ cents }) => cents)))}
+            </p>
+          )}
+        </div>
+        {description && <p className="lane-item-description">{description}</p>}
       </div>
-      {item.kind === 'std' ? (
-        <p className="lane-item-price">
-          {item.price.startsWith('$') ? null : '$'}
-          <span data-price>{item.price}</span>
-        </p>
-      ) : item.kind === 'wine' ? (
-        <p className="lane-item-price">
-          <span>
-            <small>Glass</small> {item.glass}
-          </span>
-          <span>
-            <small>Bottle</small> {item.bottle}
-          </span>
-        </p>
-      ) : (
-        <p className="lane-item-price">
-          <small>From</small> {money(Math.min(...choices.map(({ cents }) => cents)))}
-        </p>
-      )}
       <div className="lane-item-controls">
         {choices.length > 1 && (
           <label className="lane-item-option">

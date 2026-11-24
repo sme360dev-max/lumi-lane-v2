@@ -81,7 +81,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       <body className="font-body antialiased">
         <a
           href="#main"
-          className="sr-only z-[60] rounded-full bg-cocoa px-5 py-3 text-[11px] uppercase tracking-[0.2em] text-shell focus:not-sr-only focus:fixed focus:left-4 focus:top-4"
+          className="sr-only z-[60] rounded-sm bg-cocoa px-5 py-3 text-sm text-shell focus:not-sr-only focus:fixed focus:left-4 focus:top-4"
         >
           Skip to content
         </a>

@@ -1,0 +1,387 @@
+/* Masthead: one cream bar on every page. Links left, wordmark centred, account and bag right. */
+:root {
+  --masthead-height: 72px;
+  --masthead-rule: rgb(39 27 21 / 16%);
+  --masthead-ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+html {
+  scroll-padding-top: calc(var(--masthead-height) + 1rem);
+}
+
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  color: var(--ink);
+}
+
+/* The surface lives on a pseudo-element so the header never becomes a containing block for its sheet. */
+.site-header::before,
+.site-header::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+}
+
+.site-header::before {
+  background: rgb(244 237 225 / 96%);
+}
+
+@supports ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .site-header::before {
+    background: rgb(244 237 225 / 93%);
+    -webkit-backdrop-filter: blur(14px) saturate(1.15);
+    backdrop-filter: blur(14px) saturate(1.15);
+  }
+}
+
+.site-header::after {
+  inset: auto 0 0;
+  height: 1px;
+  background: var(--masthead-rule);
+  opacity: 0;
+  transition: opacity 400ms ease-out;
+}
+
+.site-header[data-scrolled='true']::after,
+.site-header:has(.site-nav[data-mobile-open='true'])::after {
+  opacity: 1;
+}
+
+.site-header-inner {
+  display: grid;
+  width: min(100%, var(--measure));
+  height: var(--masthead-height);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+  align-items: center;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  column-gap: 1rem;
+}
+
+.site-nav {
+  justify-self: start;
+}
+
+.site-wordmark {
+  display: inline-flex;
+  min-height: 44px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  justify-self: center;
+  gap: 0.36rem;
+  text-align: center;
+}
+
+/* Negative end margins cancel the trailing letter-space so the lockup sits on the true centre. */
+.site-wordmark span {
+  margin-inline-end: -0.16em;
+  font: 500 1.24rem / 1 var(--font-heading);
+  letter-spacing: 0.16em;
+  white-space: nowrap;
+}
+
+.site-wordmark small {
+  margin-inline-end: -0.2em;
+  color: var(--bronze);
+  font-size: 0.58rem;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  line-height: 1;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.site-header-actions {
+  display: flex;
+  align-items: center;
+  justify-self: end;
+  gap: 0.35rem;
+}
+
+.site-nav-toggle,
+.site-cart-link {
+  position: relative;
+  display: grid;
+  width: 44px;
+  height: 44px;
+  place-items: center;
+  border-radius: 2px;
+  color: inherit;
+  transition: color 300ms ease-out;
+}
+
+.site-nav-toggle:hover,
+.site-cart-link:hover {
+  color: var(--bronze);
+}
+
+.lane-bag-count {
+  position: absolute;
+  inset: 3px 0 auto auto;
+  display: grid;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 4px;
+  place-items: center;
+  border-radius: 9px;
+  background: var(--bronze);
+  color: #fff8ee;
+  font-size: 0.66rem;
+  font-weight: 650;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.site-nav-link,
+.site-account-link {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  color: inherit;
+  font: 450 0.875rem / 1.2 var(--font-body);
+  letter-spacing: 0.005em;
+  white-space: nowrap;
+}
+
+.site-header :is(.site-nav-link, .site-account-link, .site-wordmark, .site-nav-toggle, .site-cart-link):focus-visible {
+  border-radius: 2px;
+  outline: 2px solid var(--bronze);
+  outline-offset: 3px;
+}
+
+.site-signup-link > span {
+  display: inline-flex;
+  min-height: 38px;
+  align-items: center;
+  padding-inline: 1rem;
+  border: 1px solid currentColor;
+  border-radius: 2px;
+  transition:
+    background-color 300ms ease-out,
+    color 300ms ease-out;
+}
+
+.site-signup-link:is(:hover, [aria-current='page']) > span {
+  border-color: var(--ink);
+  background: var(--ink);
+  color: var(--lane-paper);
+}
+
+/* ---------- Below 1024px: wordmark between the menu button and the bag, links in a full-height sheet ---------- */
+@media (max-width: 1023.98px) {
+  .site-header-inner {
+    grid-template-columns: 44px minmax(0, 1fr) 44px;
+    column-gap: 0.5rem;
+  }
+
+  .site-nav-toggle {
+    margin-inline-start: -10px;
+  }
+
+  .site-cart-link {
+    margin-inline-end: -10px;
+  }
+
+  .site-desktop-account,
+  .site-nav-indicator {
+    display: none;
+  }
+
+  html:has(.site-nav[data-mobile-open='true']) {
+    overflow: hidden;
+  }
+
+  .site-nav-panel {
+    position: absolute;
+    inset: 100% 0 auto;
+    display: none;
+    height: calc(100vh - var(--masthead-height));
+    height: calc(100dvh - var(--masthead-height));
+    flex-direction: column;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding: clamp(1.5rem, 5vh, 3rem) var(--gutter) calc(1.5rem + env(safe-area-inset-bottom, 0px));
+    background: var(--lane-paper);
+  }
+
+  .site-nav[data-mobile-open='true'] .site-nav-panel {
+    display: flex;
+  }
+
+  /* Each row masks its label so the links rise into place rather than fade. */
+  .site-nav-list > li {
+    overflow: clip;
+  }
+
+  .site-nav-link {
+    width: 100%;
+    min-height: 60px;
+    padding-block: 0.3rem;
+    font: 400 clamp(2.3rem, 9.4vw, 3.6rem) / 1.14 var(--font-heading);
+    letter-spacing: -0.035em;
+    text-align: start;
+  }
+
+  .site-nav-link > span {
+    display: block;
+  }
+
+  .site-nav-link[aria-current='page'] {
+    color: var(--bronze);
+    font-style: italic;
+  }
+
+  .site-mobile-account {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    margin-top: auto;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--masthead-rule);
+  }
+
+  .site-mobile-account .site-account-link {
+    font-size: 1rem;
+  }
+
+  .site-mobile-account .site-signup-link > span {
+    min-height: 44px;
+    padding-inline: 1.25rem;
+  }
+
+  .site-nav-venue {
+    display: grid;
+    gap: 0.1rem;
+    margin-top: 1.1rem;
+    color: var(--muted);
+    font-size: 0.8125rem;
+    line-height: 1.55;
+  }
+}
+
+/* ---------- 1024px and up: links sit in the bar with one underline that travels between them ---------- */
+@media (min-width: 1024px) {
+  .site-nav-toggle,
+  .site-mobile-account,
+  .site-nav-venue {
+    display: none;
+  }
+
+  .site-nav-list {
+    display: flex;
+    align-items: center;
+    gap: clamp(1rem, 2vw, 1.9rem);
+  }
+
+  .site-desktop-account {
+    display: flex;
+    align-items: center;
+    gap: clamp(0.9rem, 1.4vw, 1.25rem);
+    margin-inline-end: 0.5rem;
+  }
+
+  :is(.site-nav-link, .site-login-link) > span {
+    position: relative;
+    padding-block: 0.42rem;
+  }
+
+  /* Hover: the rule draws from the left edge of the word. */
+  :is(.site-nav-link, .site-login-link) > span::after {
+    content: '';
+    position: absolute;
+    inset: auto 0 0;
+    height: 1.5px;
+    background: currentColor;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 450ms var(--masthead-ease);
+  }
+
+  :is(.site-nav-link, .site-login-link):is(:hover, [aria-expanded='true']) > span::after {
+    transform: scaleX(1);
+  }
+
+  /* Current page, before the travelling rule has been measured (and when scripting is off). */
+  :is(.site-nav-link, .site-login-link)[aria-current='page'] > span::after {
+    background: var(--bronze);
+    transform: scaleX(1);
+    transition: none;
+  }
+
+  .site-nav-panel:is([data-indicator='placed'], [data-indicator='sliding']) .site-nav-link[aria-current='page'] > span::after {
+    opacity: 0;
+  }
+
+  .site-nav-indicator {
+    /* No positioned ancestor before the masthead, so the menu overview can still span the full bar. */
+    position: absolute;
+    inset: 0 auto auto 0;
+    width: var(--indicator-width, 0);
+    height: 1.5px;
+    background: var(--bronze);
+    opacity: 0;
+    pointer-events: none;
+    transform: translate(var(--indicator-x, 0), var(--indicator-y, 0));
+  }
+
+  .site-nav-panel:is([data-indicator='placed'], [data-indicator='sliding']) .site-nav-indicator {
+    opacity: 1;
+  }
+
+  .site-nav-panel[data-indicator='sliding'] .site-nav-indicator {
+    transition:
+      transform 600ms var(--masthead-ease),
+      width 600ms var(--masthead-ease),
+      opacity 300ms ease-out;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) and (max-width: 1023.98px) {
+  .site-nav[data-mobile-open='true'] .site-nav-panel {
+    animation: masthead-sheet 320ms ease-out both;
+  }
+
+  .site-nav[data-mobile-open='true'] .site-nav-link > span {
+    animation: masthead-link 760ms cubic-bezier(0.16, 1, 0.3, 1) both;
+    animation-delay: calc(90ms + var(--i, 0) * 70ms);
+  }
+
+  .site-nav[data-mobile-open='true'] :is(.site-mobile-account, .site-nav-venue) {
+    animation: masthead-sheet 500ms ease-out 480ms both;
+  }
+}
+
+@keyframes masthead-sheet {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes masthead-link {
+  from {
+    transform: translateY(108%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .site-header::after,
+  .site-nav-toggle,
+  .site-cart-link,
+  .site-signup-link > span,
+  .site-nav-indicator,
+  :is(.site-nav-link, .site-login-link) > span::after {
+    transition: none !important;
+  }
+}
+
+@media (forced-colors: active) {
+  .site-header::after {
+    opacity: 1;
+    background: CanvasText;
+  }
+}

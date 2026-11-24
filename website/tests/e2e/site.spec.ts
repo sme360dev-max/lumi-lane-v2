@@ -1,5 +1,6 @@
 import { expect, test, type Page } from '@playwright/test';
 import { MENU } from '../../src/data/menu';
+import { mockBackend } from './support/backend';
 
 const ROUTES = [
   { path: '/', heading: /Chilli eggs/ },
@@ -24,6 +25,7 @@ const noHorizontalOverflow = async (page: Page) =>
 
 for (const r of ROUTES) {
   test(`direct load ${r.path}: heading, no overflow, no console errors`, async ({ page }) => {
+    await mockBackend(page);
     const errors = watchConsole(page);
     const res = await page.goto(r.path);
     expect(res?.status()).toBe(200);
@@ -67,6 +69,7 @@ test('primary navigation, active state, back/forward', async ({ page }) => {
 });
 
 test('header groups fit on one row and primary destinations stay in order', async ({ page }, info) => {
+  await mockBackend(page);
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.goto('/');
   const primary = page.getByRole('navigation', { name: 'Primary' });
@@ -74,39 +77,45 @@ test('header groups fit on one row and primary destinations stay in order', asyn
   const list = primary.locator('#site-nav-items');
   const actions = page.getByRole('navigation', { name: 'Account and shopping' });
   const wide = info.project.name === 'desktop-1440';
+  const viewportWidth = page.viewportSize()!.width;
   const logoBox = (await page.getByRole('link', { name: 'Lumi Lane, home' }).boundingBox())!;
   const navBox = (await (wide ? list : open).boundingBox())!;
   const actionsBox = (await actions.boundingBox())!;
-  expect(logoBox.x + logoBox.width).toBeLessThanOrEqual(navBox.x);
-  expect(navBox.x + navBox.width).toBeLessThanOrEqual(actionsBox.x);
+  // Links (or the menu button) left, wordmark centred, account and bag right, all on one line.
+  expect(navBox.x + navBox.width).toBeLessThanOrEqual(logoBox.x);
+  expect(logoBox.x + logoBox.width).toBeLessThanOrEqual(actionsBox.x);
+  expect(Math.abs(logoBox.x + logoBox.width / 2 - viewportWidth / 2)).toBeLessThan(1);
   expect(navBox.y + navBox.height / 2).toBeCloseTo(actionsBox.y + actionsBox.height / 2);
+  expect(logoBox.y + logoBox.height / 2).toBeCloseTo(actionsBox.y + actionsBox.height / 2);
   await noHorizontalOverflow(page);
 
   if (wide) {
-    expect(Math.abs(navBox.x + navBox.width / 2 - page.viewportSize()!.width / 2)).toBeLessThan(1);
-    expect(navBox.height).toBeGreaterThanOrEqual(46);
-    expect(navBox.height).toBeLessThanOrEqual(50);
-    await expect(list).toHaveCSS('border-top-left-radius', '999px');
-    await expect(list).toHaveCSS('color', 'rgb(255, 243, 231)');
+    // Plain words in the bar: no pill, no fill, 44px targets.
+    expect(navBox.height).toBe(44);
+    await expect(list).toHaveCSS('border-top-left-radius', '0px');
+    await expect(list).toHaveCSS('background-color', 'rgba(0, 0, 0, 0)');
+    await expect(list).toHaveCSS('color', 'rgb(39, 27, 21)');
     await expect(open).toBeHidden();
+    await expect(actions.getByRole('link', { name: 'Log in' })).toBeVisible();
+    await expect(actions.getByRole('link', { name: 'Sign up' })).toBeVisible();
   } else {
     await expect(list).toBeHidden();
-    await expect(actions.getByRole('link', { name: 'Log In' })).toHaveCount(0);
+    await expect(actions.getByRole('link', { name: 'Log in' })).toHaveCount(0);
     await open.focus();
     await page.keyboard.press('Enter');
     const close = primary.getByRole('button', { name: 'Close navigation' });
     await expect(close).toHaveAttribute('aria-expanded', 'true');
     await page.keyboard.press('Tab');
     await expect(primary.getByRole('link', { name: 'About' })).toBeFocused();
-    await expect(primary.getByRole('link', { name: 'Log In' })).toBeVisible();
-    await expect(primary.getByRole('link', { name: 'Sign Up' })).toBeVisible();
+    await expect(primary.getByRole('link', { name: 'Log in' })).toBeVisible();
+    await expect(primary.getByRole('link', { name: 'Sign up' })).toBeVisible();
   }
 
   await expect(list.locator(':scope > li > :is(a, button)')).toHaveText([
     'About',
     'Menu',
-    'Visit Us',
-    'Book a Table',
+    'Visit us',
+    'Book a table',
     'Loyalty',
   ]);
   await noHorizontalOverflow(page);
@@ -117,17 +126,21 @@ test('header groups fit on one row and primary destinations stay in order', asyn
     await open.click();
   }
   await primary.getByRole('link', { name: 'Loyalty' }).click();
-  await expect(page.getByRole('heading', { level: 1, name: 'Eight stamps. One coffee.' })).toBeVisible();
+  await expect(page).toHaveURL(/\/loyalty\/$/);
+  await expect(page.getByRole('heading', { level: 1, name: /8 points\./ })).toBeVisible();
   if (info.project.name === 'mobile-390') {
     await page.setViewportSize({ width: 320, height: 720 });
     const narrowLogo = (await page.getByRole('link', { name: 'Lumi Lane, home' }).boundingBox())!;
     const narrowToggle = (await open.boundingBox())!;
-    expect(narrowLogo.x + narrowLogo.width).toBeLessThanOrEqual(narrowToggle.x);
+    const narrowBag = (await actions.getByRole('button', { name: 'Shopping bag' }).boundingBox())!;
+    expect(narrowToggle.x + narrowToggle.width).toBeLessThanOrEqual(narrowLogo.x);
+    expect(narrowLogo.x + narrowLogo.width).toBeLessThanOrEqual(narrowBag.x);
     await noHorizontalOverflow(page);
   }
 });
 
 test('the header opens account forms and the bag without navigating', async ({ page }) => {
+  await mockBackend(page);
   await page.goto('/');
   const actions = page.getByRole('navigation', { name: 'Account and shopping' });
   const primary = page.getByRole('navigation', { name: 'Primary' });
@@ -137,10 +150,11 @@ test('the header opens account forms and the bag without navigating', async ({ p
     if (mobile) await open.click();
     await (mobile ? primary : actions).getByRole('link', { name }).click();
   };
-  await visitAccount('Log In');
+  await visitAccount('Log in');
   await expect(page).toHaveURL(/\/login\/$/);
-  await expect(page.getByRole('main').getByLabel('Email address')).toBeVisible();
-  await visitAccount('Sign Up');
+  // The login page also carries a collapsed password-reset form; this is the sign-in form's own field.
+  await expect(page.getByRole('main').locator('form.account-form').getByLabel('Email address')).toBeVisible();
+  await visitAccount('Sign up');
   await expect(page).toHaveURL(/\/signup\/$/);
   await expect(page.getByRole('main').getByLabel('Full name')).toBeVisible();
   await actions.getByRole('button', { name: 'Shopping bag' }).click();
@@ -168,7 +182,9 @@ test('every menu category renders all of its items and prices', async ({ page })
   await expect(page).toHaveURL(/#bar$/);
 });
 
-test('homepage has the carousel, one brand intro, three destinations and the shared footer', async ({ page }) => {
+test('homepage has the carousel, one brand intro, the explore stage with three destinations and the shared footer', async ({
+  page,
+}) => {
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.goto('/');
   const main = page.getByRole('main');
@@ -178,8 +194,14 @@ test('homepage has the carousel, one brand intro, three destinations and the sha
   const intro = main.getByRole('region', { name: 'A coffee house with a long table.' });
   await expect(intro.getByRole('link')).toHaveAttribute('href', '/about/');
   const showcase = main.getByRole('region', { name: 'Explore Lumi Lane' });
-  await expect(showcase.getByRole('heading', { level: 3 })).toHaveText(['Explore the Menu', 'Book a Table', 'Loyalty']);
-  await expect(showcase.getByRole('img')).toHaveCount(3);
+  await expect(showcase.getByRole('heading', { level: 2, name: 'Explore Lumi Lane' })).toBeVisible();
+  await expect(showcase.getByRole('heading', { level: 3 })).toHaveText(['Menu', 'Book a Table', 'Loyalty']);
+  // The destinations are an editorial list: the photographs belong to the stage and are decorative.
+  await expect(showcase.getByRole('img')).toHaveCount(0);
+  await expect(showcase.getByRole('listitem').locator('img, svg')).toHaveCount(0);
+  // The loyalty line describes the points programme the Loyalty page actually runs.
+  await expect(showcase.getByRole('listitem').nth(2)).toContainText('Earn points on completed orders');
+  await expect(showcase.getByText('Ask the team about loyalty')).toHaveCount(0);
   const actions = showcase.getByRole('link');
   await expect(actions).toHaveCount(3);
   for (const [index, href] of ['/menu/', '/book/', '/loyalty/'].entries()) {
@@ -196,6 +218,61 @@ test('homepage has the carousel, one brand intro, three destinations and the sha
     (element) => element.getBoundingClientRect().top - element.previousElementSibling!.getBoundingClientRect().bottom,
   );
   expect(Math.abs(gap)).toBeLessThan(1);
+});
+
+test('the explore stage follows the cursor on desktop and offers a pausable strip elsewhere', async ({ page }, info) => {
+  await page.goto('/');
+  const showcase = page.getByRole('main').getByRole('region', { name: 'Explore Lumi Lane' });
+  const stage = showcase.locator(':scope > div').first();
+  await stage.scrollIntoViewIfNeeded();
+  const toggle = stage.getByRole('button', { name: /photos$/ });
+  const tiles = stage.locator('[aria-hidden="true"]').first().locator(':scope > span');
+  // A tile counts once it is both laid out and visible (the pool is display:none outside trail mode).
+  const shown = () =>
+    tiles.evaluateAll(
+      (nodes) => nodes.filter((node) => node.getClientRects().length > 0 && getComputedStyle(node).visibility === 'visible').length,
+    );
+
+  if (info.project.name === 'mobile-390') {
+    // No cursor to follow: the photographs drift as a strip that the visitor can stop.
+    await expect(toggle).toHaveText('Pause photos');
+    await expect(toggle).toHaveAttribute('aria-pressed', 'false');
+    const strip = stage.locator('[data-paused]');
+    const state = () => strip.locator(':scope > div > div').evaluate((track) => getComputedStyle(track).animationPlayState);
+    expect(await state()).toBe('running');
+    await toggle.click();
+    await expect(toggle).toHaveText('Play photos');
+    await expect(toggle).toHaveAttribute('aria-pressed', 'true');
+    expect(await state()).toBe('paused');
+    expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBe(0);
+    return;
+  }
+
+  await expect(toggle).toBeHidden();
+  const box = (await stage.boundingBox())!;
+  expect(box.width).toBe(page.viewportSize()!.width);
+  expect(box.height / page.viewportSize()!.height).toBeGreaterThan(0.66);
+  expect(await shown()).toBe(0);
+  // A small twitch of the cursor sets nothing down; real travel does.
+  await page.mouse.move(box.x + 100, box.y + box.height / 2);
+  await page.mouse.move(box.x + 120, box.y + box.height / 2 + 10);
+  expect(await shown()).toBe(0);
+  const stride = (box.width - 240) / 8;
+  for (let step = 1; step <= 8; step++) {
+    await page.mouse.move(box.x + 120 + step * stride, box.y + box.height / 2 + (step % 2 ? 60 : -60), { steps: 3 });
+    await page.waitForTimeout(90);
+  }
+  await expect.poll(shown).toBeGreaterThan(2);
+  // Every photograph leaves again within a couple of seconds of the cursor resting.
+  await expect.poll(shown, { timeout: 4_000 }).toBe(0);
+
+  // Reduced motion replaces the trail with the still strip.
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await expect(toggle).toBeVisible();
+  await expect(toggle).toHaveText('Play photos');
+  await page.mouse.move(box.x + 100, box.y + 80);
+  await page.mouse.move(box.x + box.width - 100, box.y + 200, { steps: 4 });
+  expect(await shown()).toBe(0);
 });
 
 test('menu tabs: keyboard, deep link, refresh, back', async ({ page }) => {

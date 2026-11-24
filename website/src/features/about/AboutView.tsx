@@ -1,7 +1,16 @@
+import { existsSync } from 'node:fs';
+import { join } from 'node:path';
+import { ArchReveal } from '@/components/motion/ArchReveal';
 import { CtaLink } from '@/components/ui/Button';
 import { ResponsivePicture } from '@/components/ui/ResponsivePicture';
 import { ABOUT, VISIT } from '@/data/content';
-import { StoryReveal } from './StoryReveal';
+
+/**
+ * Slot for the owner's portrait. Drop a real photograph at public/assets/owner-portrait.jpg and it
+ * takes the main story frame at the next build; until then the shopfront holds the place.
+ */
+const OWNER_PORTRAIT = '/assets/owner-portrait.jpg';
+const hasOwnerPortrait = existsSync(join(process.cwd(), 'public', OWNER_PORTRAIT));
 
 export function AboutView() {
   const [[room, kitchen], [coffee, bar]] = ABOUT.columns;
@@ -13,28 +22,39 @@ export function AboutView() {
         <div className="lane-about-intro">
           <p className="lane-kicker">Coffee House &amp; Bar · Lightsview</p>
           <h1 className="lane-title" id="story-title">
-            Our <em>story.</em>
+            <span className="title-line">
+              <span>
+                Our <em>story.</em>
+              </span>
+            </span>
           </h1>
           <p className="lane-about-deck">{ABOUT.title}</p>
           <p>{room}</p>
         </div>
         <figure className="lane-about-architecture">
-          <ResponsivePicture
-            name="storefront"
-            widths={[480, 800, 1200]}
-            sizes="(min-width: 900px) 52vw, 89vw"
-            width={1360}
-            height={972}
-            alt={VISIT.storefrontAlt}
-            priority
-          />
+          <ArchReveal>
+            {hasOwnerPortrait ? (
+              // eslint-disable-next-line @next/next/no-img-element -- static export, no image optimiser
+              <img src={OWNER_PORTRAIT} alt="The owner of Lumi Lane" loading="eager" decoding="async" />
+            ) : (
+              <ResponsivePicture
+                name="storefront"
+                widths={[480, 800, 1200]}
+                sizes="(min-width: 900px) 42vw, 89vw"
+                width={1360}
+                height={972}
+                alt={VISIT.storefrontAlt}
+                priority
+              />
+            )}
+          </ArchReveal>
           <figcaption>{neighbourhood?.text}</figcaption>
         </figure>
       </section>
 
       <section className="lane-about-coffee">
         <div className="site-container">
-          <StoryReveal className="lane-coffee-photo">
+          <div className="lane-coffee-photo">
             <ResponsivePicture
               name="coffee"
               widths={[480, 800]}
@@ -43,7 +63,7 @@ export function AboutView() {
               height={800}
               alt="Lumi Lane café latte and leaf-shaped latte art"
             />
-          </StoryReveal>
+          </div>
           <div className="lane-about-chapter">
             <p className="lane-kicker">Coffee</p>
             <h2>
@@ -69,7 +89,7 @@ export function AboutView() {
             {ABOUT.ctaLabel}
           </CtaLink>
         </div>
-        <StoryReveal className="lane-kitchen-plate">
+        <div className="lane-kitchen-plate">
           <ResponsivePicture
             name="food"
             widths={[480, 800]}
@@ -79,7 +99,7 @@ export function AboutView() {
             alt="Lumi Lane chilli eggs on a ceramic plate"
           />
           <blockquote>{ABOUT.quote}</blockquote>
-        </StoryReveal>
+        </div>
       </section>
 
       <section className="lane-about-bar">

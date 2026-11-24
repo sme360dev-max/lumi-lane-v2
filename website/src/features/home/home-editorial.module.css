@@ -4,16 +4,15 @@
 }
 
 .intro {
-  padding-block-start: clamp(3rem, 5.7vw, 5.5rem);
+  padding-block: clamp(3.25rem, 6.4vw, 6.25rem) clamp(3.25rem, 6vw, 5.75rem);
 }
 
 .eyebrow {
-  margin-block-end: 1rem;
+  margin-block-end: 0.85rem;
   color: var(--bronze);
-  font-size: 0.72rem;
-  font-weight: 640;
-  letter-spacing: 0.13em;
-  text-transform: uppercase;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  letter-spacing: 0.01em;
 }
 
 .intro h2 {
@@ -43,99 +42,222 @@
   margin-block-start: 0.46rem;
 }
 
-.showcase {
-  padding-block: clamp(2.9rem, 5.8vw, 5.4rem) clamp(3rem, 5.1vw, 4.8rem);
-}
-
-.showcaseTitle {
-  margin-block-end: clamp(1.2rem, 2.6vw, 2.15rem);
-  color: var(--bronze);
-  font-size: 0.85rem;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
-.grid {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  gap: clamp(1.6rem, 2.8vw, 2.45rem);
-}
-
-.feature {
-  display: flex;
-  min-inline-size: 0;
-  flex-direction: column;
-  align-items: flex-start;
-}
-
-.photo {
+/* ---------- Explore stage: the room in olive, photographs framed as its lit arches ---------- */
+.stage {
+  --stage: 46 56 42;
   position: relative;
-  inline-size: 100%;
-  aspect-ratio: 4 / 3;
   overflow: hidden;
-  border-radius: 0.4rem;
-  background: #e6d3bd;
+  isolation: isolate;
+  padding-block: clamp(3.25rem, 9vw, 4.5rem) 1.25rem;
+  background: rgb(var(--stage));
+  color: var(--ivory);
 }
 
-.photo[data-subject='mezze'] {
-  background: #dfc9ad;
+.stageCopy {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  justify-items: center;
+  padding-inline: var(--gutter);
+  text-align: center;
+  pointer-events: none;
 }
 
-.photo[data-subject='coffee'] {
-  background: #e1ccbb;
-}
-
-.photo img {
+/* Keeps the headline on the stage colour while photographs pass behind it. */
+.scrim {
   position: absolute;
-  inset: 0;
+  inset: -34% -6%;
+  z-index: -1;
+  display: none;
+  background: radial-gradient(closest-side, rgb(var(--stage) / 92%) 38%, rgb(var(--stage) / 64%) 68%, transparent);
+}
+
+.stageTitle {
+  font: 400 clamp(3.1rem, 13.5vw, 7.75rem) / 1.02 var(--font-heading);
+  letter-spacing: -0.045em;
+}
+
+.stageTitle em {
+  color: var(--gold);
+}
+
+.stageHint {
+  display: none;
+  margin-block-start: 1.1rem;
+  color: rgb(250 237 221 / 78%);
+  font-size: 0.875rem;
+  line-height: 1.4;
+}
+
+.stage[data-reveal='pending'] .stageTitle :global(.title-line) > * {
+  animation: none;
+  transform: translateY(104%);
+}
+
+.tile {
+  display: block;
+  flex: none;
+  inline-size: clamp(8.75rem, 40vw, 11.5rem);
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+  border-radius: 999px 999px 0 0;
+  background: #f1e5d2;
+}
+
+.tile img {
   display: block;
   inline-size: 100%;
   block-size: 100%;
-  object-fit: cover;
-}
-
-.photo[data-subject='storefront'] img {
-  object-position: 51% 61%;
-}
-
-.photo:is([data-subject='mezze'], [data-subject='coffee']) img {
-  padding: 3.4%;
+  padding: 24% 9% 8%;
   object-fit: contain;
-  filter: drop-shadow(0 6px 9px rgb(50 27 15 / 14%));
 }
 
-.feature h3 {
-  margin-block: clamp(0.92rem, 1.6vw, 1.42rem) 0.48rem;
-  font-size: clamp(1.39rem, 2.1vw, 1.9rem);
-  line-height: 1.17;
-  letter-spacing: -0.023em;
+.tile[data-subject='storefront'] img {
+  padding: 0;
+  object-fit: cover;
+  object-position: 60% 62%;
 }
 
-.feature p {
-  max-inline-size: 34ch;
-  margin-block-end: 0.34rem;
+.trail {
+  display: none;
+}
+
+/* ---------- Strip: the same arches in a slow drift, where there is no cursor to follow ---------- */
+.strip {
+  position: relative;
+  z-index: 1;
+  margin-block-start: clamp(2rem, 6vw, 3rem);
+}
+
+.stripViewport {
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scrollbar-width: none;
+}
+
+.stripViewport::-webkit-scrollbar {
+  display: none;
+}
+
+.stripTrack {
+  --strip-gap: clamp(0.75rem, 3vw, 1.25rem);
+  display: flex;
+  gap: var(--strip-gap);
+  inline-size: max-content;
+  padding-inline: var(--gutter);
+  animation: strip-drift 64s linear infinite;
+}
+
+.strip[data-paused='true'] .stripTrack,
+.stage[data-offscreen='true'] .stripTrack {
+  animation-play-state: paused;
+}
+
+.stripToggle {
+  display: inline-flex;
+  min-block-size: 44px;
+  align-items: center;
+  margin: 0.5rem var(--gutter) 0;
+  color: rgb(250 237 221 / 86%);
+  font-size: 0.875rem;
+  text-decoration: underline;
+  text-decoration-color: rgb(250 237 221 / 45%);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.3em;
+}
+
+.stripToggle:focus-visible {
+  border-radius: 2px;
+  outline: 2px solid var(--gold);
+  outline-offset: 2px;
+}
+
+@keyframes strip-drift {
+  to {
+    transform: translateX(calc(-50% - var(--strip-gap) / 2 + var(--gutter)));
+  }
+}
+
+@media (min-width: 768px) and (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .stage {
+    block-size: clamp(30rem, 74vh, 52rem);
+    padding: 0;
+    cursor: default;
+  }
+
+  .stageCopy {
+    position: absolute;
+    inset: 0;
+    align-content: center;
+  }
+
+  .scrim,
+  .stageHint {
+    display: block;
+  }
+
+  .trail {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    display: block;
+    pointer-events: none;
+  }
+
+  .trail .tile {
+    position: absolute;
+    inset: 0 auto auto 0;
+    inline-size: clamp(9.5rem, 15vw, 14.5rem);
+    visibility: hidden;
+    will-change: transform, opacity;
+  }
+
+  .strip {
+    display: none;
+  }
+}
+
+/* ---------- Destinations: three lines, no cards ---------- */
+.showcase {
+  padding-block-end: clamp(3rem, 6vw, 5.5rem);
+}
+
+.destinations {
+  padding-block-start: clamp(2.25rem, 5vw, 4.25rem);
+}
+
+.destination {
+  display: grid;
+  gap: 0.45rem;
+  padding-block: clamp(1.25rem, 2.3vw, 1.9rem);
+  border-block-start: 1px solid var(--rule);
+}
+
+.destination:last-child {
+  border-block-end: 1px solid var(--rule);
+}
+
+.destination h3 {
+  font-size: clamp(1.8rem, 3.1vw, 2.75rem);
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+}
+
+.destination p {
+  max-inline-size: 46ch;
   color: var(--muted);
-  font-size: clamp(0.92rem, 1.25vw, 1.05rem);
-  line-height: 1.5;
-}
-
-.feature .action {
-  margin-block-start: auto;
+  font-size: clamp(0.95rem, 1.2vw, 1.05rem);
+  line-height: 1.55;
 }
 
 @media (min-width: 740px) {
-  .grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-}
-
-@media (hover: hover) and (prefers-reduced-motion: no-preference) {
-  .photo img {
-    transition: transform 300ms var(--experience-ease);
+  .destination {
+    grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.35fr) minmax(max-content, 0.5fr);
+    align-items: baseline;
+    gap: 1rem clamp(1.5rem, 4vw, 4rem);
   }
 
-  .feature:is(:hover, :focus-within) .photo img {
-    transform: scale(1.025);
+  .destination .action {
+    justify-self: end;
   }
 }

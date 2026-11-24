@@ -1,13 +1,25 @@
+/* Route change: a cream wash lifts off the incoming page. Never on first load, never for reduced motion. */
+.route-curtain {
+  display: none;
+}
+
 @media (prefers-reduced-motion: no-preference) {
-  :is(.lane-menu-intro, .lane-about-intro, .lane-visit-intro, .lane-book-intro, .account-intro, .dashboard-greeting)
-    :is(.lane-title, h1),
+  .route-curtain {
+    position: fixed;
+    inset: var(--masthead-height, 72px) 0 0;
+    z-index: 39;
+    display: block;
+    background: var(--lane-paper);
+    pointer-events: none;
+    animation: route-lift 440ms cubic-bezier(0.4, 0, 0.2, 1) both;
+  }
+
+  /* Account and dashboard titles keep their existing entrance; page titles use the line mask in editorial.css. */
+  :is(.account-intro, .dashboard-greeting) :is(.lane-title, h1),
   .page-masthead[data-illustrated='false'] h1 {
     animation: editorial-title 540ms var(--experience-ease) both;
   }
 
-  .site-nav[data-mobile-open='true'] .site-nav-panel {
-    animation: editorial-panel 190ms var(--experience-ease) both;
-  }
   .lane-menu-panel:not([hidden]),
   .dashboard-view {
     animation: editorial-panel 230ms var(--experience-ease) both;
@@ -26,11 +38,6 @@
     border-color: var(--lane-clay);
     box-shadow: 0 0 0 2px rgb(148 73 47 / 12%);
   }
-  .lane-menu-tabs button {
-    transition:
-      background-color 180ms,
-      color 180ms;
-  }
   .lane-menu-chips button {
     transition:
       border-color 180ms,
@@ -43,14 +50,40 @@
   .account-editorial img {
     animation: editorial-photo 650ms var(--experience-ease) both;
   }
+}
 
-  @supports (animation-timeline: view()) {
-    .lane-visit-photo img,
-    .lane-about-architecture img {
-      animation: editorial-photo linear both;
-      animation-timeline: view();
-      animation-range: entry 0% entry 80%;
-    }
+/* Arch reveal: the frame opens upward the first time it is seen. Only armed when scripting can open it. */
+@media (scripting: enabled) and (prefers-reduced-motion: no-preference) {
+  .arch-reveal > .arch-frame {
+    clip-path: inset(100% 0 0 0);
+    transition: clip-path 900ms cubic-bezier(0.22, 1, 0.36, 1);
+    /* If the observer never runs, the photo still appears. */
+    animation: arch-failsafe 1ms linear 6s forwards;
+  }
+  .arch-reveal img {
+    transform: scale(1.06);
+    transition: transform 1400ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .arch-reveal[data-revealed='true'] > .arch-frame {
+    clip-path: inset(0 0 0 0);
+  }
+  .arch-reveal[data-revealed='true'] img {
+    transform: none;
+  }
+}
+
+@keyframes route-lift {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+@keyframes arch-failsafe {
+  to {
+    clip-path: inset(0 0 0 0);
   }
 }
 @keyframes editorial-title {
