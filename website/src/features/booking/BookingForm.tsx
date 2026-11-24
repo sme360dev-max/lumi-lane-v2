@@ -2,7 +2,7 @@
 
 import { useRef, useState, type FormEvent } from 'react';
 import { BUSINESS } from '@/data/business';
-import { BOOK, VISIT } from '@/data/content';
+import { BOOK } from '@/data/content';
 import { CtaLink, ctaClass } from '@/components/ui/Button';
 import { Parallax } from '@/components/motion/Parallax';
 import { ResponsivePicture } from '@/components/ui/ResponsivePicture';
@@ -289,18 +289,18 @@ export function BookingForm() {
             {submitError && <p role="alert" className="booking-error">{submitError}</p>}
           </div>
         </form>
-        <figure className="lane-book-photo">
+        <figure className="lane-book-photo" data-subject="cutout">
           <Parallax className="arch-frame" travel={40}>
             <ResponsivePicture
-              name="storefront"
-              widths={[480, 800, 1200]}
-              sizes="(min-width: 961px) 34vw, 89vw"
-              width={1360}
-              height={972}
-              alt={VISIT.storefrontAlt}
+              name="coffee"
+              widths={[480, 800, 1254]}
+              sizes="(min-width: 961px) 26vw, 70vw"
+              width={1254}
+              height={1254}
+              alt="Lumi Lane café latte with leaf latte art, seen from above"
             />
           </Parallax>
-          <figcaption>Fosters Road, Lightsview</figcaption>
+          <figcaption>Espresso, milk, crema. Poured from seven every morning.</figcaption>
         </figure>
       </div>
     </div>

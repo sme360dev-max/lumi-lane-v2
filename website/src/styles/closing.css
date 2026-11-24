@@ -26,28 +26,43 @@
   background: linear-gradient(90deg, transparent, var(--footer-accent) 30%, var(--footer-accent) 70%, transparent);
 }
 
+/* Two cut-outs resting in the empty side of the brand block: never cropped, never over text. */
 .footer-drift {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  overflow: hidden;
-  pointer-events: none;
+  display: none;
 }
 
-.footer-drift img {
-  position: absolute;
-  inset: -4.5rem -3.5rem auto auto;
-  width: clamp(11rem, 19vw, 17.5rem);
-  height: auto;
-  opacity: 0.25;
-  filter: sepia(0.35) saturate(0.7) brightness(0.85);
+.footer-brand {
+  position: relative;
 }
 
-/* The smaller cup sits against the top edge, clear of the visit details. */
-.footer-drift picture + picture img {
-  inset: -2.75rem clamp(13rem, 23vw, 21rem) auto auto;
-  width: clamp(5.5rem, 8.5vw, 8.25rem);
-  opacity: 0.22;
+.footer-brand > :not(.footer-drift) {
+  position: relative;
+  z-index: 1;
+}
+
+@media (min-width: 768px) {
+  .footer-drift {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    display: block;
+    pointer-events: none;
+  }
+
+  .footer-drift img {
+    position: absolute;
+    inset: 0.5rem 1rem auto auto;
+    width: clamp(8.5rem, 11vw, 13rem);
+    height: auto;
+    opacity: 0.25;
+    filter: sepia(0.35) saturate(0.7) brightness(0.85);
+  }
+
+  .footer-drift picture + picture img {
+    inset: calc(clamp(8.5rem, 11vw, 13rem) + 2rem) calc(clamp(8.5rem, 11vw, 13rem) * 0.55) auto auto;
+    width: clamp(4.75rem, 6vw, 7rem);
+    opacity: 0.22;
+  }
 }
 
 .footer-inner {
@@ -311,7 +326,8 @@
   }
 }
 
-@media (max-width: 900px) {
+/* Below 1200px the brand block takes its own full row, which leaves room beside it for the cut-outs. */
+@media (max-width: 1199.98px) {
   .footer-grid {
     grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
   }
@@ -319,21 +335,12 @@
   .footer-brand {
     grid-column: 1 / -1;
   }
-
-  .footer-drift picture + picture {
-    display: none;
-  }
 }
 
 @media (max-width: 520px) {
   .footer-grid {
     grid-template-columns: minmax(0, 1fr);
     gap: 2.25rem;
-  }
-
-  .footer-drift img {
-    inset: -3rem -3.25rem auto auto;
-    width: 9.5rem;
   }
 
   .footer-utility {
@@ -358,7 +365,7 @@
     transform: translate3d(0, 0, 0) rotate(0deg);
   }
   to {
-    transform: translate3d(-14px, 16px, 0) rotate(7deg);
+    transform: translate3d(-10px, 10px, 0) rotate(6deg);
   }
 }
 

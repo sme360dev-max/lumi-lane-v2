@@ -15,13 +15,14 @@ export function SiteFooter() {
     <footer className="site-footer" id="site-footer">
       <FooterMotion>
         <span className="footer-hairline" aria-hidden="true" />
-        <div className="footer-drift" aria-hidden="true">
-          <ResponsivePicture name="coffee" widths={[480]} sizes="300px" width={480} height={480} alt="" />
-          <ResponsivePicture name="choco" widths={[480]} sizes="160px" width={480} height={480} alt="" />
-        </div>
         <div className="site-container footer-inner">
           <div className="footer-grid">
             <div className="footer-brand">
+              {/* Sits in the empty side of the brand block, so it can never cover text or links. */}
+              <div className="footer-drift" aria-hidden="true">
+                <ResponsivePicture name="coffee" widths={[480]} sizes="208px" width={480} height={480} alt="" />
+                <ResponsivePicture name="choco" widths={[480]} sizes="128px" width={480} height={480} alt="" />
+              </div>
               <Link href="/" className="footer-wordmark" aria-label="Back to the Lumi Lane homepage">
                 LUMI LANE
               </Link>
