@@ -1,0 +1,842 @@
+/* ==================================================================
+   Lumi Lane layer, loaded after admin.css.
+   Version 2 identity: fig, wine, bronze, shell and cream; Playfair Display
+   for titles, Archivo for text, plus practical service dashboard patterns.
+   overview panels, the staff profile, roles and permission matrix.
+   ================================================================== */
+
+/* Titles in the brand serif. */
+.hv-admin #content > h1,
+.hv-admin .hv-hero h1,
+.hv-admin .hv-login-card h1,
+.hv-admin .hv-login-copy h2,
+.hv-admin .hv-profile h1,
+.hv-admin .hv-dash-panel h2 {
+    font-family: var(--font-family-display);
+    font-weight: 700;
+    letter-spacing: -0.005em;
+}
+
+/* Version 2 palette: plum and bronze, distinct from the original olive/ember admin. */
+:root[data-theme="light"], :root:not([data-theme]) {
+    --hv-bg: #f4ede6;
+    --hv-surface: #fffaf5;
+    --hv-surface-2: #f8f0e8;
+    --hv-surface-3: #eee1d7;
+    --hv-field-bg: #fffdfb;
+    --hv-line: #e8d8ce;
+    --hv-line-strong: #d6bfb2;
+    --hv-text: #2b1d22;
+    --hv-text-2: #57464b;
+    --hv-muted: #78676a;
+    --hv-accent: #8d4939;
+    --hv-accent-hover: #71382f;
+    --hv-accent-ink: #fffaf5;
+    --hv-accent-soft: #f2e3db;
+    --hv-accent-text: #75382f;
+    --hv-focus: rgba(141, 73, 57, .28);
+    --hv-sidebar: #30212a;
+    --hv-sidebar-2: #3d2935;
+    --hv-sidebar-text: #fff5e9;
+    --hv-sidebar-muted: #cbb9b6;
+    --hv-sidebar-active: #e7bf8b;
+    --hv-sidebar-line: rgba(255, 245, 233, .12);
+    --hv-sidebar-badge-bg: rgba(231, 191, 139, .18);
+    --hv-sidebar-badge-fg: #f5d8ad;
+    --hv-chart: #a65f48;
+    --hv-chart-zero: #e6d9d0;
+    --hv-chart-rule: #eadfd7;
+    --hv-topbar-bg: rgba(244, 237, 230, .9);
+    --hv-glow: radial-gradient(900px 360px at 90% -10%, rgba(141,73,57,.11), transparent 65%), radial-gradient(700px 320px at -10% 110%, rgba(56,35,44,.07), transparent 65%);
+}
+
+:root[data-theme="dark"] {
+    --hv-bg: #171316;
+    --hv-surface: #211a1e;
+    --hv-surface-2: #2a2025;
+    --hv-surface-3: #382931;
+    --hv-field-bg: #1d171b;
+    --hv-line: #3d3037;
+    --hv-line-strong: #59434d;
+    --hv-text: #f7eee6;
+    --hv-text-2: #d9c9bf;
+    --hv-muted: #b5a39d;
+    --hv-accent: #d28b6d;
+    --hv-accent-hover: #e2a181;
+    --hv-accent-ink: #281b20;
+    --hv-accent-soft: rgba(210,139,109,.15);
+    --hv-accent-text: #e5a98c;
+    --hv-focus: rgba(210,139,109,.32);
+    --hv-sidebar: #120f13;
+    --hv-sidebar-2: #21191f;
+    --hv-sidebar-text: #f7eee6;
+    --hv-sidebar-muted: #b6a3a7;
+    --hv-sidebar-active: #e5a98c;
+    --hv-sidebar-line: rgba(247,238,230,.1);
+    --hv-sidebar-badge-bg: rgba(210,139,109,.18);
+    --hv-sidebar-badge-fg: #f1c2a4;
+    --hv-chart: #d28b6d;
+    --hv-chart-zero: #382931;
+    --hv-chart-rule: #30252b;
+    --hv-topbar-bg: rgba(23,19,22,.9);
+}
+
+:root[data-theme] {
+    --primary: var(--hv-accent);
+    --secondary: var(--hv-accent);
+    --accent: var(--hv-accent);
+    --primary-fg: var(--hv-accent-ink);
+    --body-bg: var(--hv-surface);
+    --body-fg: var(--hv-text);
+    --link-fg: var(--hv-accent-text);
+    --link-selected-fg: var(--hv-accent-text);
+    --default-button-bg: var(--hv-accent);
+    --default-button-hover-bg: var(--hv-accent-hover);
+    --object-tools-bg: var(--hv-accent);
+    --object-tools-hover-bg: var(--hv-accent-hover);
+}
+
+.hv-sidebar {
+    background: radial-gradient(360px 260px at 0 100%, rgba(210,139,109,.14), transparent 72%), var(--hv-sidebar);
+}
+
+.hv-nav-link.is-active { color: #fffaf5; }
+.hv-nav-link.is-active::before { background: var(--hv-sidebar-active); }
+
+.hv-hero {
+    background: url("../img/contours.svg") right -4rem bottom -9rem / 34rem no-repeat,
+        linear-gradient(128deg, #241820 0%, #38232c 54%, #744538 100%);
+}
+
+.hv-hero::after { background: radial-gradient(circle, rgba(231,191,139,.24), transparent 68%); }
+.hv-hero .hv-eyebrow { color: #e7cbb5; }
+.hv-hero .hv-btn-primary { background: #a65f48; border-color: #a65f48; }
+.hv-hero .hv-btn-primary:hover { background: #874734; }
+.hv-hero-count { display: inline-grid; place-items: center; min-width: 1.35rem; height: 1.35rem; margin-left: .35rem; padding: 0 .3rem; border-radius: 99px; background: rgba(255,250,245,.18); font-size: .72rem; }
+
+.hv-dash .hv-stats { grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr)); }
+@media (min-width: 1180px) { .hv-dash .hv-stats { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+.hv-stat { transition: transform .16s ease, box-shadow .16s ease; }
+.hv-stat:hover { transform: translateY(-2px); box-shadow: var(--hv-shadow-lg); }
+.hv-orders-panel { grid-column: 1 / -1; }
+.hv-order-icon { display: grid; place-items: center; width: 2.5rem; height: 2.5rem; border-radius: .75rem; background: var(--hv-accent-soft); color: var(--hv-accent-text); }
+.hv-order-icon .hv-i { width: 1.2rem; height: 1.2rem; }
+.hv-inline-alert { margin: .75rem 0 0; padding: .65rem .8rem; border-radius: var(--hv-radius-sm); background: var(--hv-warn-bg); color: var(--hv-warn-fg); font-size: .84rem; }
+
+.hv-shortcuts a:focus-visible, .hv-upcoming a:focus-visible { outline: 3px solid var(--hv-focus); outline-offset: 2px; }
+.hv-admin input:focus, .hv-admin select:focus, .hv-admin textarea:focus { border-color: var(--hv-accent); box-shadow: 0 0 0 3px var(--hv-focus); }
+
+/* Human readable records, ledger rows and the complete operations overview. */
+.hv-admin #changelist .results { border: 1px solid var(--hv-line); border-radius: 1rem; background: var(--hv-surface); box-shadow: var(--hv-shadow); }
+.hv-admin #changelist table thead th { background: var(--hv-surface-2); }
+.hv-admin #changelist table tbody td, .hv-admin #changelist table tbody th { padding-top: .9rem; padding-bottom: .9rem; }
+.hv-admin #changelist table tbody tr:nth-child(even) { background: color-mix(in srgb, var(--hv-surface-2) 48%, transparent); }
+.hv-admin #changelist table tbody tr:hover { background: var(--hv-accent-soft); }
+.hv-admin .hv-chip-good, .hv-admin .hv-chip-live { background: var(--hv-good-bg); color: var(--hv-good-fg); }
+.hv-admin .hv-chip-info { background: var(--hv-info-bg); color: var(--hv-info-fg); }
+.hv-admin .hv-chip-warn { background: var(--hv-warn-bg); color: var(--hv-warn-fg); }
+.hv-admin .hv-chip-bad { background: var(--hv-bad-bg); color: var(--hv-bad-fg); }
+.hv-admin .hv-chip-quiet { background: var(--hv-quiet-bg); color: var(--hv-quiet-fg); }
+.hv-admin .hv-money { color: var(--hv-text); font-weight: 650; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.hv-admin .hv-points { display: inline-flex; padding: .22rem .58rem; border-radius: 99px; font-weight: 700; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.hv-admin .hv-points-positive { background: var(--hv-good-bg); color: var(--hv-good-fg); }
+.hv-admin .hv-points-negative { background: var(--hv-warn-bg); color: var(--hv-warn-fg); }
+.hv-admin .hv-cell-sub { max-width: 30rem; margin-top: .18rem; }
+.hv-admin #changelist table tbody td .hv-cell-sub { overflow-wrap: anywhere; }
+.hv-admin .hv-order-reference { color: var(--hv-accent-text); }
+.hv-order-lines { display: grid; gap: .55rem; max-width: 42rem; margin: 0; padding: 0; list-style: none; }
+.hv-order-lines li { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: .65rem .8rem; border: 1px solid var(--hv-line); border-radius: .7rem; background: var(--hv-surface-2); }
+.hv-order-lines li span { display: flex; min-width: 0; flex-direction: column; gap: .12rem; }
+.hv-order-lines li small { color: var(--hv-muted); }
+.hv-order-lines li b { white-space: nowrap; font-variant-numeric: tabular-nums; }
+
+.hv-admin .aligned .form-row:has(input[name$="is_active"]) { background: linear-gradient(90deg, var(--hv-accent-soft), transparent 78%); }
+.hv-admin .aligned .form-row input[type="number"], .hv-admin .aligned .form-row input[name$="reward_amount"] { font-variant-numeric: tabular-nums; font-weight: 650; }
+.hv-admin fieldset.module .description { max-width: 54rem; padding-bottom: .35rem; line-height: 1.55; }
+.hv-admin .hv-dash-panel > header { align-items: flex-start; }
+.hv-panel-sub { margin: .2rem 0 0; color: var(--hv-muted); font-size: .8rem; }
+.hv-loyalty-rule { display: flex; align-items: center; gap: .75rem; margin: .35rem 0 .65rem; padding: .8rem; border: 1px solid var(--hv-line); border-radius: .8rem; background: linear-gradient(110deg, var(--hv-accent-soft), var(--hv-surface-2)); }
+.hv-loyalty-rule > span:nth-child(2) { display: flex; flex: 1; min-width: 0; flex-direction: column; gap: .16rem; }
+.hv-loyalty-rule small { color: var(--hv-muted); line-height: 1.4; }
+.hv-loyalty-star, .hv-ledger-mark { display: grid; flex: none; place-items: center; width: 2.25rem; height: 2.25rem; border-radius: .7rem; background: var(--hv-surface); color: var(--hv-accent-text); }
+.hv-loyalty-star .hv-i, .hv-ledger-mark .hv-i { width: 1.1rem; height: 1.1rem; }
+.hv-rule-edit { font-size: .78rem; font-weight: 650; white-space: nowrap; }
+.hv-ledger-list { margin: 0; padding: 0; list-style: none; }
+.hv-ledger-list li { display: flex; align-items: center; gap: .7rem; padding: .7rem 0; border-top: 1px solid var(--hv-line); }
+.hv-ledger-mark { width: 2rem; height: 2rem; background: var(--hv-good-bg); color: var(--hv-good-fg); }
+.hv-ledger-mark.is-debit { background: var(--hv-warn-bg); color: var(--hv-warn-fg); }
+.hv-ledger-who { display: flex; flex: 1; min-width: 0; flex-direction: column; gap: .15rem; }
+.hv-ledger-who strong, .hv-ledger-who small { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.hv-ledger-who small { color: var(--hv-muted); font-size: .76rem; }
+.hv-ledger-points { color: var(--hv-good-fg); font-size: .84rem; font-weight: 700; white-space: nowrap; }
+.hv-ledger-points.is-debit { color: var(--hv-warn-fg); }
+
+.hv-dash .hv-hero { min-height: 12rem; }
+.hv-dash .hv-hero h1 { font-size: clamp(1.9rem, 3vw, 2.5rem); }
+.hv-dash-stats .hv-stat { min-height: 9rem; }
+.hv-dash .hv-dash-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
+.hv-dash .hv-orders-panel { grid-column: 1 / -1; }
+.hv-dash .hv-loyalty-panel { grid-column: 1 / -1; }
+@media (max-width: 920px) { .hv-dash .hv-dash-grid { grid-template-columns: minmax(0, 1fr); } .hv-dash .hv-orders-panel { grid-column: auto; } }
+@media (max-width: 640px) { .hv-loyalty-rule { align-items: flex-start; flex-wrap: wrap; } .hv-rule-edit { margin-left: 3rem; } }
+
+@media (max-width: 640px) {
+    .hv-dash .hv-hero { padding: 1.35rem; }
+    .hv-dash .hv-hero h1 { font-size: 1.75rem; }
+    .hv-hero-actions { width: 100%; }
+    .hv-hero-actions .hv-btn { flex: 1 1 100%; justify-content: center; }
+    .hv-upcoming li { grid-template-columns: 2.8rem minmax(0, 1fr); }
+    .hv-upcoming li > .hv-chip { grid-column: 2; justify-self: start; }
+}
+
+/* Keep V2 brand surfaces after the shared Lumi component rules below. */
+.hv-sidebar {
+    background: radial-gradient(360px 260px at 0 100%, rgba(210,139,109,.14), transparent 72%), var(--hv-sidebar);
+}
+.hv-hero {
+    background: url("../img/contours.svg") right -4rem bottom -9rem / 34rem no-repeat,
+        linear-gradient(128deg, #241820 0%, #38232c 54%, #744538 100%);
+}
+.hv-hero::after { background: radial-gradient(circle, rgba(231,191,139,.24), transparent 68%); }
+.hv-hero .hv-eyebrow { color: #e7cbb5; }
+.hv-hero .hv-btn-primary { background: #a65f48; border-color: #a65f48; }
+.hv-hero .hv-btn-primary:hover { background: #874734; }
+.hv-login-art { background: #30212a; }
+.hv-login-art::before {
+    background: linear-gradient(90deg, rgba(36,24,32,.94), rgba(56,35,44,.68) 48%, rgba(56,35,44,.16) 78%),
+        linear-gradient(180deg, rgba(36,24,32,.46), transparent 32%, transparent 58%, rgba(28,20,24,.92));
+}
+.hv-profile-avatar { background: linear-gradient(140deg, #30212a, #744538); }
+.hv-dash .hv-stats { grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr)); }
+@media (min-width: 1180px) { .hv-dash .hv-stats { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+.hv-stat { transition: transform .16s ease, box-shadow .16s ease; }
+.hv-stat:hover { transform: translateY(-2px); box-shadow: var(--hv-shadow-lg); }
+.hv-orders-panel { grid-column: 1 / -1; }
+.hv-order-icon { display: grid; place-items: center; width: 2.5rem; height: 2.5rem; border-radius: .75rem; background: var(--hv-accent-soft); color: var(--hv-accent-text); }
+.hv-order-icon .hv-i { width: 1.2rem; height: 1.2rem; }
+.hv-inline-alert { margin: .75rem 0 0; padding: .65rem .8rem; border-radius: var(--hv-radius-sm); background: var(--hv-warn-bg); color: var(--hv-warn-fg); font-size: .84rem; }
+.hv-shortcuts a:focus-visible, .hv-upcoming a:focus-visible { outline: 3px solid var(--hv-focus); outline-offset: 2px; }
+.hv-admin input:focus, .hv-admin select:focus, .hv-admin textarea:focus { border-color: var(--hv-accent); box-shadow: 0 0 0 3px var(--hv-focus); }
+
+.hv-admin #content > h1 {
+    font-size: 1.9rem;
+    line-height: 1.15;
+}
+
+.hv-brand-text strong {
+    font-family: var(--font-family-display);
+    font-size: 1.02rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+/* Sidebar: olive, with an ember marker on the open page. */
+.hv-sidebar {
+    background:
+        radial-gradient(420px 260px at 0% 100%, rgba(196, 84, 65, 0.16), transparent 70%),
+        var(--hv-sidebar);
+}
+
+.hv-nav-link.is-active {
+    background: rgba(244, 236, 223, 0.09);
+    color: #fff;
+}
+
+.hv-nav-link.is-active::before {
+    background: var(--hv-accent);
+}
+
+/* Overview banner: olive into cocoa with a warm ember glow. */
+.hv-hero {
+    background:
+        url("../img/contours.svg") right -4rem bottom -9rem / 34rem no-repeat,
+        linear-gradient(130deg, #1f251d 0%, #2c342a 48%, #4a3a2c 100%);
+    color: var(--hv-bone);
+}
+
+.hv-hero::after {
+    background: radial-gradient(circle, rgba(196, 84, 65, 0.34), transparent 65%);
+}
+
+.hv-admin .hv-hero h1 {
+    font-size: 2.15rem;
+    color: #faeddd;
+}
+
+.hv-hero .hv-eyebrow {
+    color: #dacdb5;
+    letter-spacing: 0.18em;
+}
+
+.hv-hero .hv-lead {
+    color: rgba(250, 237, 221, 0.78);
+}
+
+.hv-admin .hv-hero .hv-btn-primary,
+.hv-admin .hv-hero a.hv-btn-primary {
+    border-color: var(--hv-accent);
+    background: var(--hv-accent);
+    color: #fff;
+}
+
+.hv-admin .hv-hero .hv-btn-primary:hover,
+.hv-admin .hv-hero a.hv-btn-primary:hover {
+    background: #a9432f;
+    color: #fff;
+}
+
+.hv-admin .hv-hero a.hv-btn-ghost {
+    border-color: rgba(250, 237, 221, 0.32);
+    background: rgba(250, 237, 221, 0.06);
+    color: #faeddd;
+}
+
+.hv-admin .hv-hero a.hv-btn-ghost:hover {
+    background: rgba(250, 237, 221, 0.14);
+    color: #fff;
+}
+
+.hv-hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+/* Sign-in: the venue photo under an olive wash. */
+.hv-login-art {
+    background: #2c342a;
+}
+
+.hv-login-art::before {
+    background:
+        linear-gradient(90deg, rgba(31, 37, 29, 0.95) 0%, rgba(44, 52, 42, 0.74) 44%, rgba(44, 52, 42, 0.2) 76%),
+        linear-gradient(180deg, rgba(31, 37, 29, 0.5) 0%, transparent 30%, transparent 56%, rgba(28, 24, 20, 0.92) 100%);
+}
+
+.hv-login-copy h2 {
+    font-size: 2.1rem;
+    line-height: 1.12;
+    color: #faeddd;
+}
+
+/* Overview: four figures, then upcoming reservations beside shortcuts. */
+.hv-dash .hv-stats {
+    grid-template-columns: repeat(auto-fit, minmax(10.5rem, 1fr));
+}
+
+@media (min-width: 1180px) {
+    .hv-dash .hv-stats {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+}
+
+.hv-dash-stats .hv-stat {
+    min-height: 0;
+}
+
+.hv-stat-value {
+    font-family: var(--font-family-display);
+}
+
+.hv-dash-grid {
+    display: grid;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+@media (min-width: 1100px) {
+    .hv-dash-grid {
+        grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
+        align-items: start;
+    }
+}
+
+.hv-dash-panel {
+    padding: 1.2rem 1.35rem 1.3rem;
+    border: 1px solid var(--hv-line);
+    border-radius: var(--hv-radius);
+    background: var(--hv-surface);
+    box-shadow: var(--hv-shadow);
+}
+
+.hv-dash-panel > header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 0.6rem;
+}
+
+.hv-dash-panel h2 {
+    margin: 0;
+    font-size: 1.25rem;
+}
+
+.hv-dash-panel > header a {
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.hv-upcoming {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.hv-upcoming li {
+    display: grid;
+    grid-template-columns: 3.6rem minmax(0, 1fr) auto;
+    gap: 0.9rem;
+    align-items: center;
+    padding: 0.7rem 0;
+    border-top: 1px solid var(--hv-line);
+}
+
+.hv-upcoming li:first-child {
+    border-top: 0;
+}
+
+.hv-upcoming-date {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0.35rem 0;
+    border-radius: var(--hv-radius-sm);
+    background: var(--hv-accent-soft);
+    color: var(--hv-accent-text);
+    line-height: 1.15;
+}
+
+.hv-upcoming-date b {
+    font-family: var(--font-family-display);
+    font-size: 1.3rem;
+}
+
+.hv-upcoming-date small {
+    font-size: 0.64rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+}
+
+.hv-upcoming-who a {
+    display: block;
+    color: var(--hv-text);
+    font-weight: 600;
+}
+
+.hv-upcoming-who span {
+    color: var(--hv-muted);
+    font-size: 0.8rem;
+}
+
+.hv-empty-note {
+    margin: 0.5rem 0 0;
+    color: var(--hv-muted);
+}
+
+.hv-shortcuts {
+    display: grid;
+    gap: 0.5rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.hv-shortcuts a {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    padding: 0.7rem 0.85rem;
+    border: 1px solid var(--hv-line);
+    border-radius: var(--hv-radius-sm);
+    background: var(--hv-surface-2);
+    color: var(--hv-text);
+    transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+
+.hv-shortcuts a:hover {
+    border-color: var(--hv-accent);
+    background: var(--hv-accent-soft);
+    color: var(--hv-text);
+}
+
+.hv-shortcuts .hv-i {
+    width: 1.3rem;
+    height: 1.3rem;
+    color: var(--hv-accent);
+}
+
+.hv-shortcuts strong {
+    display: block;
+    font-size: 0.88rem;
+}
+
+.hv-shortcuts small {
+    color: var(--hv-muted);
+    font-size: 0.78rem;
+}
+
+/* Staff profile header on the account page. */
+.hv-profile {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 1rem 1.25rem;
+    align-items: center;
+    margin-bottom: 1.25rem;
+    padding: 1.4rem 1.5rem;
+    border: 1px solid var(--hv-line);
+    border-radius: 1.1rem;
+    background:
+        radial-gradient(520px 200px at 100% 0%, var(--hv-accent-soft), transparent 70%),
+        var(--hv-surface);
+    box-shadow: var(--hv-shadow);
+}
+
+@media (min-width: 900px) {
+    .hv-profile {
+        grid-template-columns: auto minmax(0, 1fr) auto;
+    }
+}
+
+.hv-profile-avatar {
+    display: grid;
+    place-items: center;
+    width: 4.25rem;
+    height: 4.25rem;
+    border-radius: 50%;
+    background: linear-gradient(140deg, #2c342a, #4a5745);
+    color: #faeddd;
+    font-family: var(--font-family-display);
+    font-size: 1.45rem;
+    font-weight: 700;
+    box-shadow: 0 0 0 4px var(--hv-surface), 0 0 0 5px var(--hv-line-strong);
+}
+
+.hv-profile h1 {
+    margin: 0;
+    font-size: 1.75rem;
+    line-height: 1.15;
+}
+
+.hv-profile-sub {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.4rem;
+    margin: 0.25rem 0 0;
+    color: var(--hv-muted);
+}
+
+.hv-profile-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin: 0.7rem 0 0;
+}
+
+.hv-profile-facts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin: 0;
+    grid-column: 1 / -1;
+}
+
+@media (min-width: 900px) {
+    .hv-profile-facts {
+        grid-column: auto;
+    }
+}
+
+.hv-profile-facts > div {
+    min-width: 9.5rem;
+    padding: 0.65rem 0.85rem;
+    border: 1px solid var(--hv-line);
+    border-radius: var(--hv-radius-sm);
+    background: var(--hv-surface-2);
+}
+
+.hv-profile-facts dt {
+    color: var(--hv-muted);
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+.hv-profile-facts dd {
+    margin: 0.15rem 0 0;
+    font-weight: 600;
+}
+
+.hv-profile-facts small {
+    display: block;
+    color: var(--hv-muted);
+    font-size: 0.74rem;
+    font-weight: 400;
+}
+
+.hv-profile-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    grid-column: 1 / -1;
+}
+
+/* Roles as cards. */
+.hv-roles {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
+    gap: 0.6rem;
+    max-width: 60rem;
+}
+
+.hv-role {
+    display: flex;
+    gap: 0.7rem;
+    align-items: flex-start;
+    padding: 0.85rem 0.95rem;
+    border: 1px solid var(--hv-line);
+    border-radius: var(--hv-radius-sm);
+    background: var(--hv-surface-2);
+    cursor: pointer;
+    transition: border-color 0.15s ease, background-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.hv-role:hover {
+    border-color: var(--hv-line-strong);
+}
+
+.hv-role:has(input:checked) {
+    border-color: var(--hv-accent);
+    background: var(--hv-accent-soft);
+    box-shadow: inset 0 0 0 1px var(--hv-accent);
+}
+
+.hv-role input {
+    margin: 0.2rem 0 0;
+    accent-color: var(--hv-accent);
+}
+
+.hv-role-body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+}
+
+.hv-role-name {
+    color: var(--hv-text);
+    font-weight: 650;
+}
+
+.hv-role-text {
+    color: var(--hv-text-2);
+    font-size: 0.8rem;
+    line-height: 1.45;
+}
+
+.hv-role-count {
+    color: var(--hv-muted);
+    font-size: 0.72rem;
+    font-weight: 600;
+}
+
+/* Permission matrix: areas down, actions across. */
+.hv-perm {
+    max-width: 54rem;
+    overflow-x: auto;
+    border: 1px solid var(--hv-line);
+    border-radius: var(--hv-radius-sm);
+    background: var(--hv-surface);
+}
+
+.hv-admin table.hv-perm-table {
+    width: 100%;
+    margin: 0;
+    border: 0;
+    border-collapse: collapse;
+    background: transparent;
+    box-shadow: none;
+}
+
+.hv-admin .hv-perm-table th,
+.hv-admin .hv-perm-table td {
+    padding: 0.55rem 0.7rem;
+    border: 0;
+    border-top: 1px solid var(--hv-line);
+    background: transparent;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.hv-admin .hv-perm-table thead th {
+    position: static;
+    border-top: 0;
+    background: var(--hv-surface-2);
+    color: var(--hv-muted);
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+.hv-admin .hv-perm-table .hv-perm-area {
+    width: 48%;
+    text-align: left;
+}
+
+.hv-admin .hv-perm-table .hv-perm-section th {
+    padding-top: 0.85rem;
+    background: var(--hv-surface-2);
+    color: var(--hv-accent-text);
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-align: left;
+    text-transform: uppercase;
+}
+
+.hv-perm-name {
+    display: block;
+    color: var(--hv-text);
+    font-weight: 600;
+}
+
+.hv-perm-help {
+    display: block;
+    color: var(--hv-muted);
+    font-size: 0.76rem;
+    font-weight: 400;
+}
+
+.hv-perm-check {
+    display: inline-grid;
+    place-items: center;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.hv-perm-check:hover {
+    background: var(--hv-accent-soft);
+}
+
+.hv-perm-check input {
+    width: 1.05rem;
+    height: 1.05rem;
+    margin: 0;
+    accent-color: var(--hv-accent);
+    cursor: pointer;
+}
+
+.hv-perm-none {
+    color: var(--hv-line-strong);
+}
+
+.hv-admin .hv-perm-table tbody tr[data-hv-perm-row]:hover th,
+.hv-admin .hv-perm-table tbody tr[data-hv-perm-row]:hover td {
+    background: var(--hv-surface-2);
+}
+
+/* Layout fixes inside Django's form rows. */
+.hv-admin .hv-roles label.hv-role {
+    display: flex;
+    flex-direction: row;
+    width: auto;
+    margin: 0;
+    padding: 0.85rem 0.95rem;
+    font-weight: 400;
+}
+
+.hv-admin .hv-perm {
+    width: 100%;
+    max-width: 50rem;
+}
+
+.hv-admin table.hv-perm-table {
+    table-layout: fixed;
+    min-width: 34rem;
+}
+
+.hv-admin .hv-perm-table thead th:not(.hv-perm-area) {
+    width: 4.6rem;
+}
+
+.hv-admin .hv-perm-table .hv-perm-area {
+    width: auto;
+}
+
+/* Django's aligned forms give every label a 13rem column; not these. */
+.hv-admin .aligned .hv-roles label.hv-role {
+    min-width: 0;
+}
+
+.hv-admin .aligned .hv-perm label.hv-perm-check {
+    width: 2rem;
+    min-width: 0;
+    padding: 0;
+}
+
+/* Price boxes in the menu list: sized for a price, not a sentence. */
+.hv-admin #result_list input[type="number"] {
+    width: 6.5rem;
+    min-width: 0;
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+}
+
+/* Lists on the overview: no bullets, and links that keep their card colours. */
+.hv-admin ul.hv-upcoming,
+.hv-admin ul.hv-shortcuts {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.hv-admin ul.hv-upcoming > li,
+.hv-admin ul.hv-shortcuts > li {
+    margin: 0;
+    padding-left: 0;
+    list-style: none;
+}
+
+.hv-admin ul.hv-shortcuts > li::before,
+.hv-admin ul.hv-upcoming > li::before {
+    content: none;
+}
+
+.hv-admin .hv-shortcuts a,
+.hv-admin .hv-shortcuts a:visited {
+    background: var(--hv-surface-2);
+    color: var(--hv-text);
+}
+
+.hv-admin .hv-shortcuts a:hover,
+.hv-admin .hv-shortcuts a:focus-visible {
+    border-color: var(--hv-accent);
+    background: var(--hv-accent-soft);
+    color: var(--hv-text);
+}
+
+/* V2 brand surfaces: keep these last so shared component rules cannot replace them. */
+.hv-sidebar { background: radial-gradient(360px 260px at 0 100%, rgba(210,139,109,.14), transparent 72%), var(--hv-sidebar); }
+.hv-hero { background: url("../img/contours.svg") right -4rem bottom -9rem / 34rem no-repeat, linear-gradient(128deg, #241820 0%, #38232c 54%, #744538 100%); }
+.hv-hero::after { background: radial-gradient(circle, rgba(231,191,139,.24), transparent 68%); }
+.hv-hero .hv-eyebrow { color: #e7cbb5; }
+.hv-hero .hv-btn-primary { background: #a65f48; border-color: #a65f48; }
+.hv-hero .hv-btn-primary:hover { background: #874734; }
+.hv-login-art { background: #30212a; }
+.hv-login-art::before { background: linear-gradient(90deg, rgba(36,24,32,.94), rgba(56,35,44,.68) 48%, rgba(56,35,44,.16) 78%), linear-gradient(180deg, rgba(36,24,32,.46), transparent 32%, transparent 58%, rgba(28,20,24,.92)); }
+.hv-profile-avatar { background: linear-gradient(140deg, #30212a, #744538); }
+.hv-dash .hv-stats { grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr)); }
+@media (min-width: 1180px) { .hv-dash .hv-stats { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+.hv-stat { transition: transform .16s ease, box-shadow .16s ease; }
+.hv-stat:hover { transform: translateY(-2px); box-shadow: var(--hv-shadow-lg); }
+.hv-orders-panel { grid-column: 1 / -1; }
+.hv-order-icon { display: grid; place-items: center; width: 2.5rem; height: 2.5rem; border-radius: .75rem; background: var(--hv-accent-soft); color: var(--hv-accent-text); }
+.hv-order-icon .hv-i { width: 1.2rem; height: 1.2rem; }
+.hv-inline-alert { margin: .75rem 0 0; padding: .65rem .8rem; border-radius: var(--hv-radius-sm); background: var(--hv-warn-bg); color: var(--hv-warn-fg); font-size: .84rem; }
+.hv-shortcuts a:focus-visible, .hv-upcoming a:focus-visible { outline: 3px solid var(--hv-focus); outline-offset: 2px; }
+.hv-admin input:focus, .hv-admin select:focus, .hv-admin textarea:focus { border-color: var(--hv-accent); box-shadow: 0 0 0 3px var(--hv-focus); }

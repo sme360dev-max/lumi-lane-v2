@@ -1,0 +1,7 @@
+.next
+out
+node_modules
+reference
+src/app-fonts.css
+playwright-report
+test-results

@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600" fill="none" stroke="#DACDB5" stroke-width="1">
+  <!-- Contour lines behind the sidebar foot and the sign-in panel. Drawn once,
+       tinted by the opacity of whatever places it, never by its own colour. -->
+  <path d="M-40 420c90-40 150-130 260-120s150 110 250 90 120-140 200-150"/>
+  <path d="M-40 450c90-38 160-118 262-108s156 104 254 84 122-128 196-138"/>
+  <path d="M-40 480c92-34 168-106 266-96s162 98 258 78 124-116 192-126"/>
+  <path d="M-40 510c94-30 176-94 270-84s168 92 262 72 126-104 188-114"/>
+  <path d="M-40 540c96-26 184-82 274-72s174 86 266 66 128-92 184-102"/>
+  <path d="M-40 570c98-22 192-70 278-60s180 80 270 60 130-80 180-90"/>
+  <path d="M-40 600c100-18 200-58 282-48s186 74 274 54 132-68 176-78"/>
+  <path d="M-40 390c88-44 144-142 254-132s146 116 246 96 118-152 204-162"/>
+</svg>

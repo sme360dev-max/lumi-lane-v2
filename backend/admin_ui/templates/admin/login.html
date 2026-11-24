@@ -1,0 +1,141 @@
+{% load i18n static admin_ui %}<!DOCTYPE html>
+{% comment %}
+   ==================================================================
+   ==   @ Henvo                                                    ==
+   ==   @ author: Mai Quoc Viet                                    ==
+   ==   @ project: knowledge                                       ==
+   ==   @ copyright: (c) 2026 Henvo. All rights reserved.          ==
+   ==================================================================
+{% endcomment %}
+{% comment %}
+  Standalone rather than an extension of base.html: there is no menu, top bar
+  or breadcrumb to show someone who is not signed in yet, and blanking a dozen
+  blocks of the shell would be harder to read than this page.
+{% endcomment %}
+<html lang="en-AU" data-theme="light">
+<head>
+<meta charset="utf-8">
+<title>{% if form.errors %}Error: {% endif %}Sign in · {{ site_title|default:"Admin" }}</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="NONE,NOARCHIVE">
+<script src="{% static 'admin_ui/js/admin-theme.js' %}"></script>
+<link rel="icon" type="image/svg+xml" href="{% static 'admin_ui/img/favicon.svg' %}">
+<link rel="stylesheet" href="{% static 'admin_ui/css/admin.css' %}">
+<link rel="stylesheet" href="{% static 'admin_ui/css/lumi.css' %}">
+<script src="{% static 'admin_ui/js/admin.js' %}" defer></script>
+</head>
+<body class="hv-admin hv-login">
+
+<div class="hv-login-shell">
+  <section class="hv-login-art" aria-hidden="true">
+
+    <img class="hv-login-photo" src="{% static 'admin_ui/img/login-storefront.webp' %}" alt="">
+
+    <div class="hv-login-brand">
+      <img src="{% static 'admin_ui/img/logo-light.svg' %}" alt="">
+    </div>
+
+    <div class="hv-login-copy">
+      <p class="hv-login-eyebrow">Lumi Lane · Lightsview</p>
+      <h2>A calmer way to manage bookings and venue operations.</h2>
+      
+    </div>
+
+    <div class="hv-login-bottom">
+      <ul class="hv-login-points">
+        <li>{% icon 'shield-check' %}<span>Review requests</span></li>
+        <li>{% icon 'users' %}<span>Staff accounts</span></li>
+        <li>{% icon 'mail' %}<span>Email notifications</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <main class="hv-login-panel" id="content-start">
+    <div class="hv-login-top">
+      <img class="hv-login-mobile-logo hv-show-light" src="{% static 'admin_ui/img/logo.svg' %}" alt="{{ site_header|default:"Admin" }}">
+      <img class="hv-login-mobile-logo hv-show-dark" src="{% static 'admin_ui/img/logo-light.svg' %}" alt="{{ site_header|default:"Admin" }}">
+      <button type="button" class="hv-icon-btn hv-theme-toggle" data-hv-theme-toggle
+              aria-label="Toggle light or dark theme" title="Toggle theme">
+        {% icon 'moon' 'hv-show-light' %}{% icon 'sun' 'hv-show-dark' %}
+      </button>
+    </div>
+
+    <div class="hv-login-card">
+      <p class="hv-login-kicker">{{ site_header|default:"Admin" }}</p>
+      <h1>Welcome back</h1>
+      {% comment %}
+        One slot of fixed height under the title: the lead line, or what went
+        wrong in its place. A wrong password never moves the form.
+      {% endcomment %}
+      <div class="hv-login-status">
+        {% if user.is_authenticated or messages or form.errors %}
+          {% if user.is_authenticated %}
+            <div class="hv-alert hv-alert-warn" role="alert">
+              {% icon 'alert' %}
+              <span>You are signed in as <strong>{{ username }}</strong>, but this account cannot open the requested page. Sign in with another account?</span>
+            </div>
+          {% endif %}
+
+          {% for message in messages %}
+            <div class="hv-alert hv-alert-{% if message.level_tag == 'error' %}bad{% elif message.level_tag == 'warning' %}warn{% else %}good{% endif %}" role="status">
+              {% icon 'check-circle' %}<span>{{ message }}</span>
+            </div>
+          {% endfor %}
+
+          {% if form.non_field_errors %}
+            {% for error in form.non_field_errors %}
+              <div class="hv-alert hv-alert-bad" role="alert">{% icon 'alert' %}<span>{{ error }}</span></div>
+            {% endfor %}
+          {% elif form.errors %}
+            <div class="hv-alert hv-alert-bad" role="alert">{% icon 'alert' %}<span>Check the details below and try again.</span></div>
+          {% endif %}
+        {% else %}
+          <p class="hv-login-lead">Sign in to manage Lumi Lane bookings and staff access.</p>
+        {% endif %}
+      </div>
+
+      <form action="{{ app_path }}" method="post" id="login-form" class="hv-login-form" novalidate>
+        {% csrf_token %}
+        <div class="hv-login-field">
+          <label for="{{ form.username.id_for_label }}">Username</label>
+          <span class="hv-input-icon">
+            {% icon 'user' %}
+            <input type="text" name="{{ form.username.html_name }}" id="{{ form.username.id_for_label }}"
+                   value="{{ form.username.value|default_if_none:'' }}" autocomplete="username"
+                   autocapitalize="none" autofocus required maxlength="150"{% if form.errors %} aria-invalid="true"{% endif %}>
+          </span>
+          {% for error in form.username.errors %}<p class="hv-field-error">{{ error }}</p>{% endfor %}
+        </div>
+
+        <div class="hv-login-field">
+          <label for="{{ form.password.id_for_label }}">Password</label>
+          <span class="hv-input-icon">
+            {% icon 'key' %}
+            <input type="password" name="{{ form.password.html_name }}" id="{{ form.password.id_for_label }}"
+                   autocomplete="current-password" required data-hv-password{% if form.errors %} aria-invalid="true"{% endif %}>
+            <span class="hv-caps" data-hv-caps role="status" title="Caps Lock is on." hidden>
+              {% icon 'alert' %} Caps Lock is on
+            </span>
+            <button type="button" class="hv-reveal" data-hv-reveal aria-label="Show password" aria-pressed="false">
+              {% icon 'eye' %}
+            </button>
+          </span>
+          {% for error in form.password.errors %}<p class="hv-field-error">{{ error }}</p>{% endfor %}
+        </div>
+
+        <input type="hidden" name="next" value="{{ next }}">
+
+        <button type="submit" class="hv-btn hv-btn-primary hv-btn-block">
+          Sign in {% icon 'arrow-right' %}
+        </button>
+      </form>
+
+      <p class="hv-login-help">Forgot your password? Contact your administrator to reset it.</p>
+    </div>
+
+    <p class="hv-login-foot">© {% now "Y" %} {{ site_header|default:"Admin" }}</p>
+  </main>
+</div>
+
+</body>
+</html>

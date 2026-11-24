@@ -1,0 +1,36 @@
+@import './fonts.css';
+@import './hero.css';
+@import './editorial.css';
+@import './hospitality.css';
+@import './experience.css';
+@import './closing.css';
+@import './dashboard.css';
+@import './refinement-motion.css';
+@import './actions.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+  font-family: var(--font-body);
+}
+
+:where(h1, h2, h3, h4, h5, h6, blockquote) {
+  font-family: var(--font-heading);
+}
+
+picture {
+  display: contents;
+}
+
+:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 4px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto !important;
+  }
+}

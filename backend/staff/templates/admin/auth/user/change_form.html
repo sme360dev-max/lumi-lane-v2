@@ -1,0 +1,59 @@
+{% extends "admin/change_form.html" %}
+{% load admin_ui %}
+{% comment %}
+  A staff account at a glance before the form: who it is, whether they can get
+  in, what they do, and when they were last here. The form below splits into
+  tabs (Profile, Access, Roles, Extra permissions, Password, Activity).
+{% endcomment %}
+
+{% block content_title %}
+  {% if original %}
+    <section class="hv-profile" aria-label="Account summary">
+      <span class="hv-profile-avatar" aria-hidden="true">{{ original|initials }}</span>
+      <div class="hv-profile-main">
+        <h1>{% firstof original.get_full_name original.username %}</h1>
+        <p class="hv-profile-sub">
+          @{{ original.username }}{% if original.email %} · <a href="mailto:{{ original.email }}">{{ original.email }}</a>{% endif %}
+          {% if profile.is_self %}<span class="hv-chip hv-chip-quiet hv-chip-small">You</span>{% endif %}
+        </p>
+        <p class="hv-profile-chips">
+          {% if not original.is_active %}
+            <span class="hv-chip hv-chip-rejected">Blocked</span>
+          {% elif original.is_staff %}
+            <span class="hv-chip hv-chip-approved">Can sign in</span>
+          {% else %}
+            <span class="hv-chip hv-chip-pending">No admin sign-in</span>
+          {% endif %}
+          {% if original.is_superuser %}<span class="hv-chip hv-chip-approved">Owner · full access</span>{% endif %}
+          {% for role in profile.roles %}<span class="hv-chip hv-chip-quiet" title="{{ role.description }}">{{ role.name }}</span>{% endfor %}
+          {% if not original.is_superuser and not profile.roles %}<span class="hv-chip hv-chip-pending">No role yet</span>{% endif %}
+        </p>
+      </div>
+      <dl class="hv-profile-facts">
+        <div>
+          <dt>Last sign-in</dt>
+          <dd>{% if original.last_login %}{{ original.last_login|timesince }} ago<small>{{ original.last_login|date:"j M Y, g:i A" }}</small>{% else %}Never<small>No sign-in yet</small>{% endif %}</dd>
+        </div>
+        <div>
+          <dt>Member since</dt>
+          <dd>{{ original.date_joined|date:"j M Y" }}<small>{{ original.date_joined|timesince }} ago</small></dd>
+        </div>
+      </dl>
+      <div class="hv-profile-actions">
+        {% if profile.password_url %}
+          <a class="hv-btn hv-btn-ghost hv-btn-sm" href="{{ profile.password_url }}">{% icon 'key' %}Set password</a>
+        {% endif %}
+        {% if original.email %}
+          <a class="hv-btn hv-btn-ghost hv-btn-sm" href="mailto:{{ original.email }}">{% icon 'mail' %}Email</a>
+        {% endif %}
+        <a class="hv-btn hv-btn-ghost hv-btn-sm" href="{% url 'admin:auth_user_history' original.pk %}">{% icon 'history' %}Change history</a>
+      </div>
+    </section>
+  {% else %}
+    {{ block.super }}
+  {% endif %}
+{% endblock %}
+
+{# The header above already names the account and links its history. #}
+{% block content_subtitle %}{% if not original %}{{ block.super }}{% endif %}{% endblock %}
+{% block object-tools %}{% if not original %}{{ block.super }}{% endif %}{% endblock %}

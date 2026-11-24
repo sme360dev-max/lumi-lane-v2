@@ -1,0 +1,46 @@
+{% extends "admin/base_site.html" %}
+{% comment %}
+   ==================================================================
+   ==   @ Henvo                                                    ==
+   ==   @ author: Mai Quoc Viet                                    ==
+   ==   @ project: knowledge                                       ==
+   ==   @ copyright: (c) 2026 Henvo. All rights reserved.          ==
+   ==================================================================
+{% endcomment %}
+{% load i18n admin_ui %}
+{% comment %}
+  The page behind an app's name in a breadcrumb. Not an extension of
+  index.html as Django has it: that one is the overview now, and this page is
+  just the tables of one app.
+{% endcomment %}
+
+{% block bodyclass %}{{ block.super }} app-{{ app_label }} hv-app-index{% endblock %}
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+  <a href="{% url 'admin:index' %}">Overview</a>
+  &rsaquo; {% for app in app_list %}{% if app.app_label == 'bookings' %}Bookings{% else %}{{ app.name }}{% endif %}{% endfor %}
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="hv-page">
+  {% for app in app_list %}
+    <div class="hv-tiles">
+      {% for model in app.models %}
+        <article class="hv-tile">
+          <h2>{% if model.admin_url %}<a href="{{ model.admin_url }}">{% if model.object_name == 'BookingRequest' %}Table requests{% else %}{{ model.name }}{% endif %}</a>{% else %}{{ model.name }}{% endif %}</h2>
+          <div class="hv-tile-actions">
+            {% if model.admin_url %}
+              <a class="hv-btn hv-btn-ghost hv-btn-sm" href="{{ model.admin_url }}">{% icon 'list' %}{% if model.view_only %}View{% else %}Open list{% endif %}</a>
+            {% endif %}
+            {% if model.add_url %}
+              <a class="hv-btn hv-btn-ghost hv-btn-sm" href="{{ model.add_url }}">{% icon 'plus' %}Add</a>
+            {% endif %}
+          </div>
+        </article>
+      {% endfor %}
+    </div>
+  {% endfor %}
+</div>
+{% endblock %}

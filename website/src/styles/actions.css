@@ -1,0 +1,100 @@
+.cta {
+  display: inline-flex;
+  min-block-size: var(--cta-height, 44px);
+  max-inline-size: 100%;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-family: var(--font-body);
+  font-size: var(--cta-size, 0.875rem);
+  font-weight: 620;
+  line-height: 1.25;
+  letter-spacing: 0.012em;
+  text-align: center;
+}
+
+.cta svg {
+  flex: none;
+}
+
+.cta--editorial {
+  width: fit-content;
+  padding-block: 0.42rem;
+  color: var(--cta-editorial, currentColor);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-decoration-color: color-mix(in srgb, currentColor 50%, transparent);
+  text-underline-offset: 0.29em;
+  transition: text-decoration-color 210ms, text-underline-offset 210ms, transform 210ms var(--experience-ease);
+}
+
+.cta--editorial:is(:hover, :focus-visible) {
+  text-decoration-color: currentColor;
+  text-underline-offset: 0.38em;
+}
+
+.cta--primary {
+  padding: 0.65rem 1.28rem;
+  border: 1px solid #a47c5e;
+  border-radius: 999px;
+  background: #efdbc3;
+  color: #302019;
+  transition: background-color 220ms, border-color 220ms, transform 200ms var(--experience-ease);
+}
+
+.cta--primary:not(:disabled):is(:hover, :focus-visible) {
+  border-color: #93684c;
+  background: #e8c8a6;
+}
+
+.cta--primary:focus-visible {
+  outline-color: var(--cta-focus, #8b422d);
+}
+
+.cta--primary:disabled {
+  border-style: dashed;
+  border-color: #a79686;
+  background: #ebe0d3;
+  color: #6d5748;
+  cursor: not-allowed;
+}
+
+.cta--compact.cta--primary {
+  padding-inline: 1.04rem;
+}
+
+.cta--navigation {
+  justify-content: flex-start;
+  text-align: start;
+  text-decoration-line: underline;
+  text-decoration-thickness: 1px;
+  text-decoration-color: transparent;
+  text-underline-offset: 0.26em;
+  transition: background-color 190ms, text-decoration-color 190ms;
+}
+
+.cta--navigation:is(:hover, :focus-visible) {
+  text-decoration-color: currentColor;
+}
+
+:is(.hero, .dark-section, .lane-about-bar, .dashboard-active, .site-footer) {
+  --cta-focus: #f5d8b5;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .cta--primary:not(:disabled):active {
+    transform: translateY(1px);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) and (hover: hover) {
+  .cta--editorial:hover {
+    transform: translateY(-1px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cta {
+    transition: none;
+  }
+}

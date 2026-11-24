@@ -1,0 +1,63 @@
+# Secrets and local environment files
+.env
+.env.*
+!.env.example
+!.env.*.example
+!**/.env.example
+!**/.env.*.example
+.dev.vars
+.dev.vars.*
+!.dev.vars.example
+!**/.dev.vars.example
+
+# Python / Django
+__pycache__/
+*.py[cod]
+*.sqlite3
+*.db
+*.log
+.venv/
+venv/
+env/
+.tox/
+.nox/
+backend/staticfiles/
+backend/media/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.pyright/
+.hypothesis/
+.coverage
+coverage.xml
+htmlcov/
+*.sqlite3-*
+*.db-wal
+*.db-shm
+
+# Node.js / Next.js
+node_modules/
+.next/
+out/
+coverage/
+test-results/
+playwright-report/
+*.tsbuildinfo
+next-env.d.ts
+.vercel/
+.wrangler/
+.netlify/
+.open-next/
+.svelte-kit/
+.turbo/
+.output/
+
+# Local QA output (keep the QA report)
+website/qa/screenshots/
+website/qa/last-run.txt
+
+# Editors and operating systems
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/

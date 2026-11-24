@@ -1,0 +1,19 @@
+{% comment %}
+   ==================================================================
+   ==   @ Henvo                                                    ==
+   ==   @ author: Mai Quoc Viet                                    ==
+   ==   @ project: knowledge                                       ==
+   ==   @ copyright: (c) 2026 Henvo. All rights reserved.          ==
+   ==================================================================
+{% endcomment %}
+{% load admin_ui %}{% if messages %}
+  <ul class="messagelist" role="status">
+    {% for message in messages %}
+      <li class="hv-message{% if message.tags %} {{ message.tags }}{% endif %}">
+        {% if message.level_tag == "error" %}{% icon 'alert' %}{% elif message.level_tag == "warning" %}{% icon 'alert' %}{% elif message.level_tag == "success" %}{% icon 'check-circle' %}{% else %}{% icon 'info' %}{% endif %}
+        <span>{{ message|capfirst }}</span>
+        <button type="button" class="hv-message-close" data-hv-dismiss aria-label="Dismiss">{% icon 'x' %}</button>
+      </li>
+    {% endfor %}
+  </ul>
+{% endif %}

@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 72" role="img" aria-label="Lumi Lane Coffee House and Bar">
+  <g transform="translate(4 4)" fill="none" stroke="#C45441" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M24 4v5M13 8l3 4M35 8l-3 4" stroke-width="2.4"/>
+    <path d="M10 22h29l-3 25H13z" fill="#FBF6EF" stroke-width="2.6"/>
+    <path d="M39 27h4a7 7 0 0 1 0 14h-5M16 53h19" stroke-width="2.6"/>
+    <path d="M18 29h13" stroke="#DACDB5" stroke-width="2"/>
+  </g>
+  <text x="62" y="34" fill="#1C1814" font-family="Georgia, 'Times New Roman', serif" font-size="27" font-weight="700" letter-spacing="1.8">LUMI LANE</text>
+  <text x="64" y="54" fill="#796D63" font-family="Arial, sans-serif" font-size="9.5" font-weight="600" letter-spacing="2.2">COFFEE HOUSE · BAR</text>
+</svg>

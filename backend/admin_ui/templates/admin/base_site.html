@@ -1,0 +1,11 @@
+{% extends "admin/base.html" %}
+{% comment %}
+   ==================================================================
+   ==   @ Henvo                                                    ==
+   ==   @ author: Mai Quoc Viet                                    ==
+   ==   @ project: knowledge                                       ==
+   ==   @ copyright: (c) 2026 Henvo. All rights reserved.          ==
+   ==================================================================
+{% endcomment %}
+
+{% block title %}{% if subtitle %}{{ subtitle }} · {% endif %}{{ title }} · {{ site_title|default:"Admin" }}{% endblock %}

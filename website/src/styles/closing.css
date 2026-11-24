@@ -1,0 +1,202 @@
+.site-footer {
+  --footer-ink: #fff0dd;
+  --footer-muted: #cdb5a4;
+  --footer-warm: #edab88;
+  --footer-line: rgb(239 192 158 / 31%);
+  overflow: clip;
+  isolation: isolate;
+  color: var(--footer-ink);
+  background: #241812;
+}
+
+.footer-curtain {
+  padding-block: clamp(1.8rem, 4vw, 4rem) 1.35rem;
+  background:
+    radial-gradient(ellipse at 76% 15%, #422b1f, transparent 56%),
+    radial-gradient(ellipse at 18% 95%, #2f1d16, transparent 62%), #241812;
+}
+
+.site-footer h2 {
+  color: var(--footer-warm);
+  font-size: 0.78rem;
+  letter-spacing: 0.09em;
+}
+
+.footer-signature {
+  border-block-end: 1px solid var(--footer-line);
+  padding-block-end: clamp(0.75rem, 2vw, 1.6rem);
+}
+.footer-wordmark {
+  display: flex;
+  justify-content: center;
+  gap: 0.14em;
+  color: var(--footer-ink);
+  font: 400 clamp(3.5rem, 17.2vw, 17rem) / 0.95 var(--font-heading);
+  letter-spacing: -0.075em;
+}
+.footer-wordmark > span {
+  display: block;
+  padding-inline-end: 0.08em;
+  overflow: clip;
+}
+.footer-wordmark > span > span {
+  display: block;
+}
+
+.footer-directory {
+  display: grid;
+  grid-template-columns: 1fr 1.05fr 1fr;
+  gap: 1.15rem clamp(1rem, 3.5vw, 3.5rem);
+  padding-block: 1.45rem;
+}
+.footer-directory > div + div {
+  border-inline-start: 1px solid var(--footer-line);
+  padding-inline-start: clamp(0.8rem, 2vw, 1.7rem);
+}
+.footer-directory h2 {
+  margin-block-end: 0.46rem;
+}
+.footer-directory address,
+.footer-hours {
+  font-size: 0.89rem;
+}
+.footer-directory small,
+.footer-brand-note {
+  display: block;
+  color: var(--footer-muted);
+  font-size: 0.72rem;
+}
+.footer-hours div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 0.55rem;
+}
+.footer-hours dt {
+  color: var(--footer-muted);
+}
+.footer-directory a {
+  font-size: 0.83rem;
+}
+
+.footer-links {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.25rem 1rem;
+  border-block: 1px solid var(--footer-line);
+  padding-block: 0.3rem;
+}
+.footer-nav,
+.footer-social {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.footer-nav {
+  gap: 0 clamp(0.85rem, 2.7vw, 2.8rem);
+}
+.footer-nav a {
+  min-height: 44px;
+  text-transform: uppercase;
+  font-size: 0.72rem;
+  letter-spacing: 0.095em;
+}
+.footer-social a {
+  display: grid;
+  width: 44px;
+  height: 44px;
+  place-items: center;
+  color: var(--footer-warm);
+}
+.footer-social a:is(:hover, :focus-visible) {
+  color: var(--footer-ink);
+}
+.footer-social svg {
+  width: 1.17rem;
+  height: 1.17rem;
+}
+.footer-utility {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: start;
+  gap: 0.3rem 1rem;
+  padding-top: 0.7rem;
+  color: var(--footer-muted);
+  font-size: 0.76rem;
+}
+.footer-utility > a {
+  justify-self: end;
+}
+.footer-utility small {
+  padding-top: 0.56rem;
+  font-size: inherit;
+}
+.footer-policies {
+  max-width: 24rem;
+}
+.footer-policies summary {
+  min-height: 36px;
+  padding: 0.5rem 0;
+  cursor: pointer;
+}
+.footer-policies p,
+.footer-policies ul {
+  max-width: 28ch;
+  margin-block: 0.45rem;
+}
+.footer-policies ul {
+  padding-inline-start: 1.1rem;
+  list-style: disc;
+}
+.footer-policy-link {
+  color: var(--footer-ink);
+  text-decoration: underline;
+}
+
+@media (max-width: 700px) {
+  .footer-directory {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .footer-directory > div:nth-child(3) {
+    border: 0;
+    padding: 0;
+  }
+}
+@media (max-width: 450px) {
+  .footer-directory {
+    gap: 1rem 0.7rem;
+  }
+  .footer-directory > div + div {
+    padding-inline-start: 0.65rem;
+  }
+  .footer-directory > div:nth-child(3) {
+    grid-column: 1 / -1;
+  }
+  .footer-utility {
+    grid-template-columns: 1fr auto;
+  }
+  .footer-utility .footer-policies {
+    grid-row: 2;
+    grid-column: 1 / -1;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    .footer-wordmark > span > span {
+      animation: closing-type linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 100%;
+    }
+    .footer-wordmark > span + span > span {
+      animation-range: entry 13% entry 110%;
+    }
+  }
+}
+@keyframes closing-type {
+  from {
+    transform: translateY(82%);
+    opacity: 0.55;
+  }
+}

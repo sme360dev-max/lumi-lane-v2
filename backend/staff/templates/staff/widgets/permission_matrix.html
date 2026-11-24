@@ -1,0 +1,66 @@
+<div class="hv-perm" data-hv-perm>
+  <table class="hv-perm-table">
+    <thead>
+      <tr>
+        <th scope="col" class="hv-perm-area">Area</th>
+        {% for action in matrix.actions %}<th scope="col">{{ action }}</th>{% endfor %}
+        <th scope="col">All</th>
+      </tr>
+    </thead>
+    {% for section in matrix.sections %}
+      <tbody>
+        <tr class="hv-perm-section"><th colspan="{{ matrix.actions|length|add:2 }}" scope="rowgroup">{{ section.title }}</th></tr>
+        {% for row in section.rows %}
+          <tr data-hv-perm-row>
+            <th scope="row" class="hv-perm-area">
+              <span class="hv-perm-name">{{ row.label }}</span>
+              <span class="hv-perm-help">{{ row.help }}</span>
+            </th>
+            {% for cell in row.cells %}
+              <td>
+                {% if cell %}
+                  <label class="hv-perm-check" title="{{ cell.label }}">
+                    <input type="checkbox" name="{{ widget.name }}" value="{{ cell.value }}" id="{{ cell.id }}"{% if cell.checked %} checked{% endif %}>
+                    <span class="hv-sr-only">{{ cell.label }}</span>
+                  </label>
+                {% else %}<span class="hv-perm-none" aria-hidden="true">—</span>{% endif %}
+              </td>
+            {% endfor %}
+            <td>
+              <label class="hv-perm-check hv-perm-all" title="All actions for {{ row.label|lower }}">
+                <input type="checkbox" data-hv-perm-all>
+                <span class="hv-sr-only">All actions for {{ row.label|lower }}</span>
+              </label>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    {% endfor %}
+  </table>
+</div>
+<script>
+(function () {
+  var box = document.currentScript.previousElementSibling;
+  box.querySelectorAll("[data-hv-perm-row]").forEach(function (row) {
+    var all = row.querySelector("[data-hv-perm-all]");
+    var boxes = Array.prototype.slice.call(row.querySelectorAll('input[type="checkbox"]:not([data-hv-perm-all])'));
+    function sync() {
+      var on = boxes.filter(function (b) { return b.checked; }).length;
+      all.checked = on === boxes.length;
+      all.indeterminate = on > 0 && on < boxes.length;
+    }
+    all.addEventListener("change", function () {
+      boxes.forEach(function (b) { b.checked = all.checked; });
+    });
+    boxes.forEach(function (b) {
+      b.addEventListener("change", function () {
+        // Adding, editing or deleting something you cannot see makes no sense: tick View too.
+        if (b.checked && boxes[0] && b !== boxes[0]) { boxes[0].checked = true; }
+        if (!b.checked && b === boxes[0]) { boxes.forEach(function (o) { o.checked = false; }); }
+        sync();
+      });
+    });
+    sync();
+  });
+})();
+</script>

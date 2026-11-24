@@ -1,0 +1,32 @@
+{% comment %}
+   ==================================================================
+   ==   @ Henvo                                                    ==
+   ==   @ author: Mai Quoc Viet                                    ==
+   ==   @ project: knowledge                                       ==
+   ==   @ copyright: (c) 2026 Henvo. All rights reserved.          ==
+   ==================================================================
+{% endcomment %}
+{% comment %}
+  A single-series column chart drawn in CSS from admin_charts.column_chart().
+  Each column is focusable and carries its own tooltip, so the figure behind a
+  bar is one hover or one Tab away; the table under the chart has them all.
+{% endcomment %}
+<div class="hv-chart{% if chart.is_empty %} is-empty{% endif %}" role="img" aria-label="{{ label }}">
+  <div class="hv-chart-axis" aria-hidden="true">
+    {% for tick in chart.ticks %}<span style="bottom: {{ tick.pct }}%">{{ tick.text }}</span>{% endfor %}
+  </div>
+  <div class="hv-chart-plot">
+    {% for tick in chart.ticks %}<i class="hv-chart-rule" style="bottom: {{ tick.pct }}%" aria-hidden="true"></i>{% endfor %}
+    <div class="hv-chart-cols">
+      {% for bar in chart.bars %}
+        <div class="hv-col" tabindex="0" data-tip="{{ bar.tip }}">
+          <span class="hv-col-bar{% if bar.empty %} is-zero{% endif %}" style="height: {{ bar.pct }}%"></span>
+        </div>
+      {% endfor %}
+    </div>
+    {% if chart.is_empty %}<p class="hv-chart-empty">No data for this period yet.</p>{% endif %}
+  </div>
+  <div class="hv-chart-labels" aria-hidden="true">
+    {% for bar in chart.bars %}<span>{{ bar.label }}</span>{% endfor %}
+  </div>
+</div>

@@ -1,0 +1,14 @@
+<div class="hv-roles">
+  {% for card in cards %}
+    <label class="hv-role" for="{{ card.attrs.id }}">
+      <input type="checkbox" name="{{ card.name }}" value="{{ card.value }}" id="{{ card.attrs.id }}"{% if card.selected %} checked{% endif %}>
+      <span class="hv-role-body">
+        <span class="hv-role-name">{{ card.label }}</span>
+        {% if card.description %}<span class="hv-role-text">{{ card.description }}</span>{% endif %}
+        <span class="hv-role-count">{{ card.count }} permission{{ card.count|pluralize }}</span>
+      </span>
+    </label>
+  {% empty %}
+    <p class="hv-muted">No roles yet. Create one under Roles &amp; permissions.</p>
+  {% endfor %}
+</div>

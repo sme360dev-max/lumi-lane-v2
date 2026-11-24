@@ -1,0 +1,17 @@
+{% comment %}
+   ==================================================================
+   ==   @ Henvo                                                    ==
+   ==   @ author: Mai Quoc Viet                                    ==
+   ==   @ project: knowledge                                       ==
+   ==   @ copyright: (c) 2026 Henvo. All rights reserved.          ==
+   ==================================================================
+{% endcomment %}
+{% load admin_urls %}
+{% block object-tools-items %}
+  {% if has_add_permission %}
+  <li>
+    {% url cl.opts|admin_urlname:'add' as add_url %}
+    <a href="{% add_preserved_filters add_url is_popup to_field %}" class="addlink">{% if cl.model_admin.add_label %}{{ cl.model_admin.add_label }}{% else %}Add {{ cl.opts.verbose_name }}{% endif %}</a>
+  </li>
+  {% endif %}
+{% endblock %}

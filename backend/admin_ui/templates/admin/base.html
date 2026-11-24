@@ -1,0 +1,191 @@
+{% load i18n static admin_ui %}<!DOCTYPE html>
+{% comment %}
+   ==================================================================
+   ==   @ Henvo                                                    ==
+   ==   @ author: Mai Quoc Viet                                    ==
+   ==   @ project: knowledge                                       ==
+   ==   @ copyright: (c) 2026 Henvo. All rights reserved.          ==
+   ==================================================================
+{% endcomment %}
+<html lang="en-AU" data-theme="light">
+<head>
+<meta charset="utf-8">
+<title>{% block title %}{% endblock %}</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+{% block blockbots %}<meta name="robots" content="NONE,NOARCHIVE">{% endblock %}
+{% comment %}
+  Sets data-theme before the first paint. Loaded blocking and first on
+  purpose: deferred, the page would flash light for a frame in dark mode.
+{% endcomment %}
+<script src="{% static 'admin_ui/js/admin-theme.js' %}"></script>
+<link rel="icon" type="image/svg+xml" href="{% static 'admin_ui/img/favicon.svg' %}">
+<link rel="stylesheet" href="{% block stylesheet %}{% static 'admin/css/base.css' %}{% endblock %}">
+{% block dark-mode-vars %}{% endblock %}
+{% block responsive %}<link rel="stylesheet" href="{% static 'admin/css/responsive.css' %}">{% endblock %}
+{% block extrastyle %}{% endblock %}
+<link rel="stylesheet" href="{% static 'admin_ui/css/admin.css' %}">
+<link rel="stylesheet" href="{% static 'admin_ui/css/lumi.css' %}">
+{% block extrahead %}{% endblock %}
+<script src="{% static 'admin_ui/js/admin.js' %}" defer></script>
+</head>
+
+<body class="hv-admin {% if is_popup %}popup {% endif %}{% block bodyclass %}{% endblock %}"
+      data-admin-utc-offset="{% now 'Z' %}">
+<a href="#content-start" class="skip-to-content-link">Skip to main content</a>
+
+<div class="hv-shell{% if is_popup %} hv-shell-popup{% endif %}" id="container">
+  {% if not is_popup %}
+    {% block nav-sidebar %}
+    <aside class="hv-sidebar" id="hv-sidebar" aria-label="Main navigation">
+      <a class="hv-brand" href="{% url 'admin:index' %}">
+        <span class="hv-brand-mark"><img src="{% static 'admin_ui/img/logo-mark-light.svg' %}" alt=""></span>
+        <span class="hv-brand-text">
+          <strong>{{ site_header|default:"Admin" }}</strong>
+          <small>Lightsview · Version 02</small>
+        </span>
+      </a>
+
+      {% admin_nav as nav %}
+      <nav class="hv-nav" data-hv-nav>
+        {% for section in nav %}
+          <div class="hv-nav-section">
+            {% if section.title %}<p class="hv-nav-title">{{ section.title }}</p>{% endif %}
+            <ul>
+              {% for item in section.items %}
+                <li>
+                  <a class="hv-nav-link{% if item.active %} is-active{% endif %}" href="{{ item.url }}"
+                     {% if item.active %}aria-current="page"{% endif %} title="{{ item.name }}" data-hv-nav-link
+                     data-hv-section="{{ section.title|default:'' }}">
+                    {% icon item.icon %}
+                    <span class="hv-nav-text">{{ item.name }}</span>
+                    {% if item.badge %}<span class="hv-nav-badge" aria-label="{{ item.badge }} waiting">{{ item.badge }}</span>{% endif %}
+                  </a>
+                </li>
+              {% endfor %}
+            </ul>
+          </div>
+        {% endfor %}
+      </nav>
+
+      <div class="hv-sidebar-foot">
+        <button type="button" class="hv-collapse" data-hv-collapse
+                data-label-collapse="Collapse menu"
+                data-label-expand="Expand menu"
+                aria-label="Collapse menu"
+                title="Collapse menu">
+          {% icon 'panel' %}<span class="hv-nav-text">Collapse</span>
+        </button>
+      </div>
+    </aside>
+    <div class="hv-scrim" data-hv-close-nav hidden></div>
+    {% endblock %}
+  {% endif %}
+
+  <div class="hv-main">
+    {% if not is_popup %}
+    {% block header %}
+    <header class="hv-topbar">
+      <button type="button" class="hv-icon-btn hv-nav-toggle" data-hv-nav-toggle aria-controls="hv-sidebar"
+              aria-expanded="false" aria-label="Open menu">{% icon 'menu' %}</button>
+
+      {% block nav-breadcrumbs %}
+        <nav class="hv-crumbs" aria-label="Breadcrumbs">
+          {% block breadcrumbs %}
+            <div class="breadcrumbs">
+              <a href="{% url 'admin:index' %}">Overview</a>
+              {% if title %} &rsaquo; {{ title }}{% endif %}
+            </div>
+          {% endblock %}
+        </nav>
+      {% endblock %}
+
+      <div class="hv-topbar-tools">
+        {% block nav-global %}{% endblock %}
+
+        {% if has_permission %}
+          <button type="button" class="hv-search-trigger" data-hv-palette-open aria-haspopup="dialog">
+            {% icon 'search' %}<span>Go to page…</span><kbd>Ctrl K</kbd>
+          </button>
+        {% endif %}
+
+
+        <button type="button" class="hv-icon-btn hv-theme-toggle" data-hv-theme-toggle
+                aria-label="Toggle light or dark theme"
+                title="Toggle theme">
+          {% icon 'moon' 'hv-show-light' %}{% icon 'sun' 'hv-show-dark' %}
+        </button>
+
+        {% block usertools %}
+        {% if has_permission %}
+          <details class="hv-user" data-hv-menu>
+            <summary aria-label="Your account">
+                <span class="hv-avatar" aria-hidden="true">{{ user|initials }}</span>
+              <span class="hv-user-name">{% firstof user.get_full_name user.get_username %}</span>
+              {% icon 'chevron-down' 'hv-user-caret' %}
+            </summary>
+            <div class="hv-menu" role="menu">
+              <div class="hv-menu-head">
+                <strong>{% firstof user.get_full_name user.get_username %}</strong>
+                <span>{% if user.is_superuser %}Superuser{% else %}Administrator{% endif %}{% if user.email %} · {{ user.email }}{% endif %}</span>
+              </div>
+              {% comment %}
+                Not named "userlinks": Django's password pages override that
+                block with their own links and its theme switcher.
+              {% endcomment %}
+              {% block hv-userlinks %}
+                {% if perms.auth.change_user %}
+                  <a class="hv-menu-item" role="menuitem" href="{% url 'admin:auth_user_change' user.pk %}">{% icon 'user' %}My profile</a>
+                {% endif %}
+                {% if user.has_usable_password %}
+                  <a class="hv-menu-item" role="menuitem" href="{% url 'admin:password_change' %}">{% icon 'key' %}Change password</a>
+                {% endif %}
+                <form id="logout-form" method="post" action="{% url 'admin:logout' %}">
+                  {% csrf_token %}
+                  <button type="submit" class="hv-menu-item hv-menu-danger" role="menuitem">{% icon 'logout' %}Sign out</button>
+                </form>
+              {% endblock %}
+            </div>
+          </details>
+        {% endif %}
+        {% endblock %}
+      </div>
+    </header>
+    {% endblock %}
+    {% endif %}
+
+    <main id="content-start" class="hv-content" tabindex="-1">
+      {% block messages %}{% include "admin/includes/hv_messages.html" %}{% endblock messages %}
+      <div id="content" class="{% block coltype %}colM{% endblock %}">
+        {% block pretitle %}{% endblock %}
+        {% block content_title %}{% if cl %}<h1>{{ cl.model_admin.list_title|default:cl.opts.verbose_name_plural|capfirst }}</h1>{% elif title %}<h1>{{ title }}</h1>{% endif %}{% endblock %}
+        {% block content_subtitle %}{% if subtitle %}<h2>{{ subtitle }}</h2>{% endif %}{% endblock %}
+        {% block content %}
+          {% block object-tools %}{% endblock %}
+          {{ content }}
+        {% endblock %}
+        {% block sidebar %}{% endblock %}
+        <br class="clear">
+      </div>
+    </main>
+    {% if not is_popup %}<footer id="footer" class="hv-footer">{% block footer %}{% endblock %}</footer>{% endif %}
+  </div>
+</div>
+
+{% if has_permission and not is_popup %}
+  <div class="hv-palette" data-hv-palette hidden>
+      <div class="hv-palette-box" role="dialog" aria-modal="true" aria-label="Go to page">
+      <label class="hv-palette-field">
+        {% icon 'search' %}
+        <input type="search" placeholder="Search pages…" autocomplete="off"
+               aria-label="Page name" data-hv-palette-input>
+        <kbd>Esc</kbd>
+      </label>
+      <ul class="hv-palette-list" data-hv-palette-list role="listbox"></ul>
+      <p class="hv-palette-empty" data-hv-palette-empty hidden>No matching pages.</p>
+    </div>
+  </div>
+{% endif %}
+
+{% block extrabody %}{% endblock extrabody %}
+</body>
+</html>

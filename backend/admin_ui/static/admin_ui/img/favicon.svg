@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Lumi Lane">
+  <rect width="64" height="64" rx="17" fill="#C45441"/>
+  <g fill="none" stroke="#FBF6EF" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M32 9v5M21 14l3 4M43 14l-3 4" stroke-width="2.5"/>
+    <path d="M14 26h36l-4 25H18z" fill="#FBF6EF" stroke-width="3"/>
+    <path d="M50 31h2a7 7 0 0 1 0 14h-5M21 56h22" stroke-width="3"/>
+    <path d="M22 34h16" stroke="#C45441" stroke-width="2.4"/>
+  </g>
+</svg>

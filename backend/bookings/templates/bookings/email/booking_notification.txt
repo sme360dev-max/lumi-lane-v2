@@ -1,0 +1,17 @@
+{% autoescape off %}NEW TABLE REQUEST — LUMI LANE
+
+{{ booking.name }} would like a table for {{ guests_label }}.
+
+When:      {{ date_long }}, {{ time_label }} ({{ when_label|lower }})
+Guests:    {{ guests_label }}
+Email:     {{ booking.email }}
+Phone:     {{ booking.phone }}
+Requests:  {{ booking.notes|default:"None" }}
+
+This is a request, not a confirmed booking. Confirm or decline it in the admin:
+{{ admin_url }}
+
+Reply to this email to write to {{ booking.name }} directly.
+
+Received {{ submitted_label }} (Adelaide time) through the Lumi Lane website.
+{% endautoescape %}

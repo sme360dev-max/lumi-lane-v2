@@ -1,0 +1,35 @@
+.panel {
+  padding: clamp(3.5rem, 8vw, 7rem) 0;
+  background: var(--color-espresso, #2b211d);
+  color: var(--color-cream, #f7f1e8);
+}
+
+.panel h2 {
+  margin: .35rem 0 1rem;
+  font-family: var(--font-display, Georgia, serif);
+  font-size: clamp(2.4rem, 6vw, 5rem);
+  font-weight: 400;
+}
+
+.track {
+  width: min(100%, 38rem);
+  height: .7rem;
+  margin: 1.6rem 0;
+  overflow: hidden;
+  border: 1px solid currentColor;
+  border-radius: 1rem;
+}
+
+.track span {
+  display: block;
+  height: 100%;
+  background: #c6865e;
+  transition: width .3s ease;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .75rem;
+  margin-top: 1.5rem;
+}

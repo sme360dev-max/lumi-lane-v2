@@ -1,0 +1,168 @@
+{% extends "admin/base_site.html" %}
+{% load admin_ui %}
+
+{% block bodyclass %}{{ block.super }} dashboard hv-dash{% endblock %}
+{% block breadcrumbs %}
+  <div class="breadcrumbs"><span>Overview</span></div>
+{% endblock %}
+{% block content_title %}{% endblock %}
+
+{% block content %}
+{% booking_dashboard_counts as counts %}
+<div class="hv-page">
+  <header class="hv-hero">
+    <div class="hv-hero-text">
+      <p class="hv-eyebrow">Lumi Lane · Lightsview · {% today_label %}</p>
+      <h1>{% greeting %}, {% firstof user.first_name user.get_username %}</h1>
+      <p class="hv-lead">Your service overview for today. Review new requests, pickup orders and customer rewards.</p>
+    </div>
+    <div class="hv-hero-actions">
+      {% if perms.bookings.view_bookingrequest %}
+        <a class="hv-btn hv-btn-primary" href="{% url 'admin:bookings_bookingrequest_changelist' %}?status=new">
+          {% icon 'calendar' %}New requests
+        </a>
+      {% endif %}
+      {% if perms.menu.view_menuitem %}
+        <a class="hv-btn hv-btn-ghost" href="{% url 'admin:menu_menuitem_changelist' %}">{% icon 'bowl' %}Menu &amp; prices</a>
+      {% endif %}
+      {% if perms.accounts.view_order %}
+        <a class="hv-btn hv-btn-ghost" href="{% url 'admin:accounts_order_changelist' %}?status=received">{% icon 'clipboard' %}New orders{% if counts.orders_new %}<span class="hv-hero-count">{{ counts.orders_new }}</span>{% endif %}</a>
+      {% endif %}
+    </div>
+  </header>
+
+  <section class="hv-stats hv-dash-stats" aria-label="At a glance">
+    <article class="hv-stat">
+      <p class="hv-stat-label">{% icon 'hourglass' %}Awaiting response</p>
+      <p class="hv-stat-value">{{ counts.new }}</p>
+      <p class="hv-stat-note">New table requests</p>
+    </article>
+    <article class="hv-stat">
+      <p class="hv-stat-label">{% icon 'calendar' %}Today</p>
+      <p class="hv-stat-value">{{ counts.today }}</p>
+      <p class="hv-stat-note">Reservations, not cancelled</p>
+    </article>
+    <article class="hv-stat{% if counts.email_issues %} hv-stat-alert{% endif %}">
+      <p class="hv-stat-label">{% icon 'mail' %}Email issues</p>
+      <p class="hv-stat-value">{{ counts.email_issues }}</p>
+      <p class="hv-stat-note">Notifications to retry</p>
+    </article>
+    <article class="hv-stat">
+      <p class="hv-stat-label">{% icon 'bowl' %}Sold out</p>
+      <p class="hv-stat-value">{{ counts.sold_out }}</p>
+      <p class="hv-stat-note">Menu items hidden from the website</p>
+    </article>
+    {% if perms.accounts.view_order %}
+    <article class="hv-stat{% if counts.orders_new %} hv-stat-alert{% endif %}">
+      <p class="hv-stat-label">{% icon 'clipboard' %}New orders</p>
+      <p class="hv-stat-value">{{ counts.orders_new }}</p>
+      <p class="hv-stat-note">Awaiting staff confirmation</p>
+    </article>
+    <article class="hv-stat">
+      <p class="hv-stat-label">{% icon 'clock' %}In progress</p>
+      <p class="hv-stat-value">{{ counts.orders_active }}</p>
+      <p class="hv-stat-note">Accepted, preparing or ready</p>
+    </article>
+    {% endif %}
+  </section>
+
+  <div class="hv-dash-grid">
+    {% if perms.accounts.view_order %}
+    <section class="hv-dash-panel hv-orders-panel" aria-labelledby="hv-orders-title">
+      <header>
+        <h2 id="hv-orders-title">Latest pickup orders</h2>
+        <a href="{% url 'admin:accounts_order_changelist' %}">View all</a>
+      </header>
+      {% if counts.recent_orders %}
+        <ul class="hv-upcoming">
+          {% for order in counts.recent_orders %}
+            <li>
+              <span class="hv-order-icon">{% icon 'clipboard' %}</span>
+              <span class="hv-upcoming-who">
+                <a href="{% url 'admin:accounts_order_change' order.pk %}">{{ order.account.email }}</a>
+                <span>{{ order.created_at|date:"j M, g:i A" }} · {{ order.total_display }}</span>
+              </span>
+              <span class="hv-chip hv-chip-{{ order.status|order_status_tone }}">{{ order.get_status_display }}</span>
+            </li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <p class="hv-empty-note">No pickup orders yet.</p>
+      {% endif %}
+      {% if counts.order_email_issues %}<p class="hv-inline-alert">{{ counts.order_email_issues }} order notification{{ counts.order_email_issues|pluralize }} need attention.</p>{% endif %}
+    </section>
+    {% endif %}
+
+    <section class="hv-dash-panel" aria-labelledby="hv-upcoming-title">
+      <header>
+        <h2 id="hv-upcoming-title">Coming up</h2>
+        {% if perms.bookings.view_bookingrequest %}<a href="{% url 'admin:bookings_bookingrequest_changelist' %}">All requests</a>{% endif %}
+      </header>
+      {% if counts.upcoming and perms.bookings.view_bookingrequest %}
+        <ul class="hv-upcoming">
+          {% for booking in counts.upcoming %}
+            <li>
+              <span class="hv-upcoming-date"><b>{{ booking.date|date:"j" }}</b><small>{{ booking.date|date:"M" }}</small></span>
+              <span class="hv-upcoming-who">
+                <a href="{% url 'admin:bookings_bookingrequest_change' booking.pk %}">{{ booking.name }}</a>
+                <span>{{ booking.date|date:"l" }}, {{ booking.time|time:"g:i A" }} · {{ booking.guests }} guest{{ booking.guests|pluralize }}</span>
+              </span>
+              <span class="hv-chip {% if booking.status == 'new' %}hv-chip-pending{% else %}hv-chip-approved{% endif %}">{{ booking.get_status_display }}</span>
+            </li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <p class="hv-empty-note">No upcoming reservations yet.</p>
+      {% endif %}
+    </section>
+
+    <section class="hv-dash-panel" aria-labelledby="hv-shortcuts-title">
+      <header><h2 id="hv-shortcuts-title">Quick actions</h2></header>
+      <ul class="hv-shortcuts">
+        {% if perms.bookings.add_bookingrequest %}
+          <li><a href="{% url 'admin:bookings_bookingrequest_add' %}">{% icon 'plus' %}<span><strong>Add a phone booking</strong><small>Record a reservation taken by phone</small></span></a></li>
+        {% endif %}
+        {% if perms.menu.change_menuitem %}
+          <li><a href="{% url 'admin:menu_menuitem_changelist' %}">{% icon 'tag' %}<span><strong>Change prices</strong><small>Edit prices or mark items sold out</small></span></a></li>
+        {% endif %}
+        {% if perms.accounts.view_loyaltyprogram %}
+          <li><a href="{% url 'admin:accounts_loyaltyprogram_changelist' %}">{% icon 'star' %}<span><strong>Loyalty rewards</strong><small>Set points and reward value</small></span></a></li>
+        {% endif %}
+        {% if perms.auth.view_user %}
+          <li><a href="{% url 'admin:auth_user_changelist' %}">{% icon 'users' %}<span><strong>Staff accounts</strong><small>Who can sign in, and their roles</small></span></a></li>
+        {% endif %}
+        {% if perms.auth.view_group %}
+          <li><a href="{% url 'admin:auth_group_changelist' %}">{% icon 'shield-check' %}<span><strong>Roles &amp; permissions</strong><small>What each role can see and change</small></span></a></li>
+        {% endif %}
+      </ul>
+    </section>
+
+    {% if perms.accounts.view_loyaltyentry %}
+    <section class="hv-dash-panel hv-loyalty-panel" aria-labelledby="hv-loyalty-title">
+      <header>
+        <div><h2 id="hv-loyalty-title">Loyalty activity</h2><p class="hv-panel-sub">Recent points and rewards</p></div>
+        <a href="{% url 'admin:accounts_loyaltyentry_changelist' %}">View ledger</a>
+      </header>
+      {% if counts.loyalty_program %}
+        <div class="hv-loyalty-rule">
+          <span class="hv-loyalty-star">{% icon 'star' %}</span>
+          <span><strong>{% if counts.loyalty_program.is_active %}Program active{% else %}Program paused{% endif %}</strong><small>{{ counts.loyalty_program.points_per_order }} point{{ counts.loyalty_program.points_per_order|pluralize }} per completed order · {{ counts.loyalty_program.points_for_reward }} points = ${{ counts.loyalty_program.reward_amount }} AUD</small></span>
+          {% if perms.accounts.view_loyaltyprogram %}<a class="hv-rule-edit" href="{% url 'admin:accounts_loyaltyprogram_changelist' %}">Edit rules</a>{% endif %}
+        </div>
+      {% endif %}
+      {% if counts.recent_loyalty %}
+        <ul class="hv-ledger-list">
+          {% for entry in counts.recent_loyalty %}
+            <li>
+              <span class="hv-ledger-mark{% if entry.points_delta < 0 %} is-debit{% endif %}">{% icon 'star' %}</span>
+              <span class="hv-ledger-who"><strong>{{ entry.account.full_name|default:entry.account.email }}</strong><small>{{ entry.get_kind_display }} · {{ entry.created_at|date:"j M, g:i A" }}</small></span>
+              <span class="hv-ledger-points{% if entry.points_delta < 0 %} is-debit{% endif %}">{% if entry.points_delta > 0 %}+{% endif %}{{ entry.points_delta }}{% if entry.points_delta %} pt{% endif %}</span>
+            </li>
+          {% endfor %}
+        </ul>
+      {% else %}<p class="hv-empty-note">No loyalty activity has been recorded yet.</p>{% endif %}
+    </section>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

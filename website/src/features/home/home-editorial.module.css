@@ -1,0 +1,141 @@
+.editorial {
+  background: var(--lane-paper);
+  color: var(--ink);
+}
+
+.intro {
+  padding-block-start: clamp(3rem, 5.7vw, 5.5rem);
+}
+
+.eyebrow {
+  margin-block-end: 1rem;
+  color: var(--bronze);
+  font-size: 0.72rem;
+  font-weight: 640;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+}
+
+.intro h2 {
+  font-size: clamp(2.65rem, 4.9vw, 4.6rem);
+  line-height: 1.04;
+  letter-spacing: -0.036em;
+}
+
+.intro h2 em {
+  display: block;
+  color: var(--bronze);
+}
+
+.introCopy {
+  max-inline-size: 51ch;
+  margin-block-start: clamp(1rem, 2.1vw, 1.6rem);
+  color: var(--muted);
+  font-size: clamp(0.98rem, 1.35vw, 1.1rem);
+  line-height: 1.6;
+}
+
+.action {
+  --cta-editorial: var(--ink);
+}
+
+.intro .action {
+  margin-block-start: 0.46rem;
+}
+
+.showcase {
+  padding-block: clamp(2.9rem, 5.8vw, 5.4rem) clamp(3rem, 5.1vw, 4.8rem);
+}
+
+.showcaseTitle {
+  margin-block-end: clamp(1.2rem, 2.6vw, 2.15rem);
+  color: var(--bronze);
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: clamp(1.6rem, 2.8vw, 2.45rem);
+}
+
+.feature {
+  display: flex;
+  min-inline-size: 0;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.photo {
+  position: relative;
+  inline-size: 100%;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  border-radius: 0.4rem;
+  background: #e6d3bd;
+}
+
+.photo[data-subject='mezze'] {
+  background: #dfc9ad;
+}
+
+.photo[data-subject='coffee'] {
+  background: #e1ccbb;
+}
+
+.photo img {
+  position: absolute;
+  inset: 0;
+  display: block;
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+}
+
+.photo[data-subject='storefront'] img {
+  object-position: 51% 61%;
+}
+
+.photo:is([data-subject='mezze'], [data-subject='coffee']) img {
+  padding: 3.4%;
+  object-fit: contain;
+  filter: drop-shadow(0 6px 9px rgb(50 27 15 / 14%));
+}
+
+.feature h3 {
+  margin-block: clamp(0.92rem, 1.6vw, 1.42rem) 0.48rem;
+  font-size: clamp(1.39rem, 2.1vw, 1.9rem);
+  line-height: 1.17;
+  letter-spacing: -0.023em;
+}
+
+.feature p {
+  max-inline-size: 34ch;
+  margin-block-end: 0.34rem;
+  color: var(--muted);
+  font-size: clamp(0.92rem, 1.25vw, 1.05rem);
+  line-height: 1.5;
+}
+
+.feature .action {
+  margin-block-start: auto;
+}
+
+@media (min-width: 740px) {
+  .grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .photo img {
+    transition: transform 300ms var(--experience-ease);
+  }
+
+  .feature:is(:hover, :focus-within) .photo img {
+    transform: scale(1.025);
+  }
+}
