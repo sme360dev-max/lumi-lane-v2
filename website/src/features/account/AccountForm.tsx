@@ -6,6 +6,7 @@ import { useState, type FormEvent, type ReactNode } from 'react';
 import { flushSync } from 'react-dom';
 import { ctaClass } from '@/components/ui/Button';
 import { accountRequest, ApiError } from '@/lib/api';
+import { PasswordResetForm } from './PasswordResetForm';
 import { setAccountSession } from './account-session';
 import {
   PASSWORD_MINIMUM,
@@ -103,23 +104,6 @@ export function AccountForm({ mode, children }: { mode: AccountMode; children: R
   const [notice, setNotice] = useState('');
   const [formVersion, setFormVersion] = useState(0);
   const [submitting, setSubmitting] = useState(false);
-  const [resetEmail, setResetEmail] = useState('');
-  const [resetNotice, setResetNotice] = useState('');
-  const [resetSending, setResetSending] = useState(false);
-
-  const requestReset = async () => {
-    setResetSending(true);
-    setResetNotice('');
-    try {
-      const result = await accountRequest<{ message: string }>('/api/account/password-reset/', {
-        method: 'POST', body: JSON.stringify({ email: resetEmail }),
-      }, false);
-      setResetNotice(result.message);
-    } catch (error) {
-      setResetNotice(error instanceof Error ? error.message : 'Could not request a reset email.');
-    } finally { setResetSending(false); }
-  };
-
   const submit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const form = event.currentTarget;
@@ -193,7 +177,7 @@ export function AccountForm({ mode, children }: { mode: AccountMode; children: R
           error={errors.password}
           hint={signup ? `Use at least ${PASSWORD_MINIMUM} characters.` : undefined}
         />
-        {signup ? (
+        {signup && (
           <PasswordField
             key={`confirm-${formVersion}`}
             field="confirmPassword"
@@ -201,16 +185,6 @@ export function AccountForm({ mode, children }: { mode: AccountMode; children: R
             autoComplete="new-password"
             error={errors.confirmPassword}
           />
-        ) : (
-          <details className="account-recovery">
-            <summary>Forgot password?</summary>
-            <div className="dashboard-form">
-              <label htmlFor="account-reset-email">Email address</label>
-              <input id="account-reset-email" type="email" autoComplete="email" required value={resetEmail} onChange={(event) => setResetEmail(event.target.value)} />
-              <button type="button" className={ctaClass({ variant: 'editorial' })} disabled={resetSending || !resetEmail} onClick={() => void requestReset()}>{resetSending ? 'Sending…' : 'Send reset link'}</button>
-              <p role="status">{resetNotice}</p>
-            </div>
-          </details>
         )}
         <button type="submit" className={ctaClass({ className: 'account-submit' })} disabled={submitting}>
           {submitting ? 'Please wait…' : signup ? 'Create account' : 'Log in'}
@@ -219,6 +193,12 @@ export function AccountForm({ mode, children }: { mode: AccountMode; children: R
           {notice}
         </div>
       </form>
+      {!signup && (
+        <details className="account-recovery">
+          <summary>Forgot password?</summary>
+          <PasswordResetForm compact />
+        </details>
+      )}
       <p className="account-switch">
         {signup ? 'Already have an account?' : 'New to Lumi Lane?'}{' '}
         <Link href={signup ? '/login/' : '/signup/'} className={ctaClass({ variant: 'editorial' })}>

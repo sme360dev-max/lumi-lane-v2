@@ -43,6 +43,7 @@ class PasswordResetToken(models.Model):
     expires_at = models.DateTimeField(db_index=True)
     created_at = models.DateTimeField(auto_now_add=True)
     used_at = models.DateTimeField(null=True, blank=True)
+    attempts = models.PositiveSmallIntegerField(default=0)
 
 
 class CartItem(models.Model):

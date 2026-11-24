@@ -1,12 +1,25 @@
+'use client';
+
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { PageShell } from '@/components/layout/PageShell';
 import { ResponsivePicture } from '@/components/ui/ResponsivePicture';
 import { HERO } from '@/data/content';
+import { useAccountSession } from './account-session';
 import { AccountForm } from './AccountForm';
 import type { AccountMode } from './validation';
 
 export function AccountPage({ mode }: { mode: AccountMode }) {
+  const router = useRouter();
+  const session = useAccountSession();
+  useEffect(() => {
+    if (session.status === 'active') router.replace('/account/');
+  }, [router, session.status]);
+
   const signup = mode === 'signup';
   const image = HERO.slides.find(({ image }) => image === (signup ? 'food' : 'coffee'))!;
+
+  if (session.status === 'active') return null;
 
   return (
     <PageShell>

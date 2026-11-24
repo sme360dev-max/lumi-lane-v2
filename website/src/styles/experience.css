@@ -302,6 +302,192 @@
 .account-recovery p {
   padding: 0 0 0.4rem;
 }
+.account-recovery {
+  justify-self: stretch;
+  width: 100%;
+  padding: 0.2rem 0.9rem;
+  border: 1px solid var(--experience-rule);
+  border-radius: 8px;
+  background: #fffaf3;
+}
+.account-recovery[open] {
+  padding-bottom: 0.95rem;
+  border-color: #d8bda5;
+  box-shadow: 0 10px 28px rgb(49 31 21 / 7%);
+}
+.account-recovery summary {
+  width: 100%;
+  margin: 0;
+  color: var(--experience-clay);
+  font-weight: 650;
+  text-decoration: none;
+}
+.account-recovery summary::marker {
+  color: var(--experience-clay);
+}
+.password-reset-flow {
+  width: min(100%, 34rem);
+  margin: 0 auto;
+  color: var(--experience-ink);
+}
+.password-reset-flow.is-compact {
+  width: 100%;
+  margin-top: 0.25rem;
+}
+.password-reset-heading {
+  margin-bottom: 1.2rem;
+}
+.password-reset-heading h1,
+.password-reset-complete h2 {
+  margin: 0.2rem 0 0.4rem;
+  font-family: var(--font-display, Georgia, serif);
+  font-size: clamp(1.8rem, 5vw, 2.5rem);
+  line-height: 1.12;
+}
+.password-reset-heading h1 em,
+.password-reset-complete h2 em {
+  color: var(--experience-clay);
+  font-weight: 500;
+}
+.password-reset-heading > p:last-child,
+.password-reset-complete > p {
+  margin: 0.5rem 0 0;
+  color: var(--experience-muted);
+  line-height: 1.55;
+}
+.password-reset-form {
+  display: grid;
+  gap: 0.82rem;
+  margin-top: 0.8rem;
+}
+.password-reset-field {
+  display: grid;
+  gap: 0.32rem;
+}
+.password-reset-field label {
+  color: var(--experience-ink);
+  font-size: 0.84rem;
+  font-weight: 650;
+}
+.password-reset-field input {
+  width: 100%;
+  min-height: 48px;
+  padding: 0.68rem 0.8rem;
+  border: 1px solid var(--experience-control);
+  border-radius: 6px;
+  background: #fffdf9;
+  color: var(--experience-ink);
+  font: inherit;
+  transition: border-color 160ms, box-shadow 160ms, background-color 160ms;
+}
+.password-reset-field input:focus-visible {
+  border-color: var(--experience-clay);
+  outline: 0;
+  background: white;
+  box-shadow: 0 0 0 3px rgb(147 71 51 / 13%);
+}
+.password-reset-field small {
+  color: var(--experience-muted);
+  font-size: 0.76rem;
+  line-height: 1.4;
+}
+.password-reset-code {
+  max-width: 13rem;
+  font-size: 1.25rem !important;
+  font-weight: 700;
+  letter-spacing: 0.32em;
+  text-align: center;
+}
+.password-reset-sent {
+  margin: 0;
+  padding: 0.8rem 0.9rem;
+  border-left: 3px solid var(--experience-clay);
+  border-radius: 0 6px 6px 0;
+  background: #f5e9da;
+  color: var(--experience-ink);
+  font-size: 0.82rem;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+.password-reset-form > .cta {
+  width: 100%;
+  margin-top: 0.15rem;
+}
+.password-reset-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.5rem 1rem;
+}
+.password-reset-actions button {
+  min-height: 40px;
+  padding: 0.3rem 0;
+  color: var(--experience-clay);
+  font-size: 0.8rem;
+  font-weight: 650;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+.password-reset-actions button:disabled {
+  opacity: 0.6;
+}
+.password-reset-notice {
+  min-height: 1.2rem;
+  margin: 0;
+  color: var(--experience-muted);
+  font-size: 0.79rem;
+  line-height: 1.45;
+}
+.password-reset-complete {
+  display: grid;
+  justify-items: start;
+  gap: 0.7rem;
+  padding: 1.1rem 0;
+}
+.password-reset-complete h2,
+.password-reset-complete > p {
+  margin: 0;
+}
+.password-reset-complete .cta {
+  margin-top: 0.4rem;
+}
+.account-recovery {
+  justify-self: stretch;
+  width: 100%;
+  max-width: 25.5rem;
+  margin: 1.05rem auto 1.1rem;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+.account-recovery[open] {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+.account-recovery summary {
+  display: flex;
+  width: 100%;
+  min-height: 40px;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 0 0.15rem;
+  color: var(--experience-clay);
+  font-size: 0.81rem;
+  text-decoration: underline;
+  text-underline-offset: 0.22em;
+}
+.password-reset-flow.is-compact {
+  width: 100%;
+  margin: 0.45rem 0 0;
+  padding: 1rem 1.05rem;
+  border: 1px solid #dfcbbb;
+  border-radius: 9px;
+  background: #fffaf3;
+  box-shadow: 0 8px 20px rgb(49 31 21 / 5%);
+}
 .account-submit {
   --cta-height: 50px;
   width: 100%;

@@ -27,6 +27,7 @@ export function AccountActions({ pathname, onNavigate }: { pathname: string; onN
   const [login, signup] = ACCOUNT_NAV;
   const session = useAccountSession();
   const active = session.status === 'active';
+  const signedOut = session.status === 'signed-out';
   const entry = active ? { href: '/account/', label: 'Account' } : login;
   return (
     <>
@@ -42,18 +43,18 @@ export function AccountActions({ pathname, onNavigate }: { pathname: string; onN
           <span aria-hidden="true">{entry.label}</span>
         </span>
       </Link>
-      <Link
-        href={signup.href}
-        className="site-account-link site-signup-link"
-        aria-current={isActive(pathname, signup.href) ? 'page' : undefined}
-        onClick={onNavigate}
-        onPointerMove={movePill}
-        onPointerLeave={resetPill}
-      >
-        <span className="site-signup-pill">
-          {signup.label}
-        </span>
-      </Link>
+      {signedOut && (
+        <Link
+          href={signup.href}
+          className="site-account-link site-signup-link"
+          aria-current={isActive(pathname, signup.href) ? 'page' : undefined}
+          onClick={onNavigate}
+          onPointerMove={movePill}
+          onPointerLeave={resetPill}
+        >
+          <span className="site-signup-pill">{signup.label}</span>
+        </Link>
+      )}
     </>
   );
 }

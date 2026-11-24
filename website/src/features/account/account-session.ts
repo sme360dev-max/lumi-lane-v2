@@ -9,7 +9,8 @@ export type AccountSession = { status: 'loading' | 'signed-out' | 'active'; acco
 let state: AccountSession = { status: 'loading', account: null };
 let initialized = false;
 const listeners = new Set<() => void>();
-const snapshotOnServer = (): AccountSession => ({ status: 'loading', account: null });
+const SERVER_SNAPSHOT: AccountSession = { status: 'loading', account: null };
+const snapshotOnServer = (): AccountSession => SERVER_SNAPSHOT;
 
 function emit() {
   for (const listener of listeners) listener();

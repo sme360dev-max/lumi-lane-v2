@@ -9,6 +9,7 @@ from django.contrib.auth.hashers import check_password, make_password
 from django.core.mail import send_mail
 from django.core.exceptions import ValidationError
 from django.db import transaction
+from django.db.models import F
 from django.db.models import Q, Sum
 from django.core.validators import validate_email
 from django.http import JsonResponse
@@ -404,28 +405,54 @@ def request_password_reset(request):
     email = str((data or {}).get("email", "")).strip().lower()
     account = Account.objects.filter(email__iexact=email, is_active=True).first()
     if account:
-        raw = secrets.token_urlsafe(32)
-        PasswordResetToken.objects.create(account=account, token_hash=token_digest(raw), expires_at=timezone.now() + timedelta(minutes=30))
-        base = getattr(settings, "PUBLIC_WEBSITE_URL", "").rstrip("/")
-        link = f"{base}/reset-password/?token={raw}" if base else raw
+        code = f"{secrets.randbelow(1_000_000):06d}"
+        digest = token_digest(code)
+        while PasswordResetToken.objects.filter(token_hash=digest).exists():
+            code = f"{secrets.randbelow(1_000_000):06d}"
+            digest = token_digest(code)
+        now = timezone.now()
+        PasswordResetToken.objects.filter(account=account, used_at__isnull=True).update(used_at=now)
+        PasswordResetToken.objects.create(
+            account=account,
+            token_hash=digest,
+            expires_at=now + timedelta(minutes=10),
+        )
         try:
-            send_mail("Reset your Lumi Lane password", f"Use this link within 30 minutes to reset your password: {link}", settings.DEFAULT_FROM_EMAIL, [account.email], fail_silently=False)
+            send_mail(
+                "Your Lumi Lane password reset code",
+                f"Your password reset code is {code}. It expires in 10 minutes. If you did not request this code, you can ignore this email.",
+                settings.DEFAULT_FROM_EMAIL,
+                [account.email],
+                fail_silently=False,
+            )
         except Exception:
             logger.exception("Password reset email failed")
-    return JsonResponse({"message": "If an account exists for that email, password reset instructions have been sent."})
+    return JsonResponse({"message": "If an account exists for that email, a six-digit reset code has been sent."})
 
 
 @csrf_exempt
 @require_http_methods(["POST"])
 def reset_password(request):
     data = _payload(request)
-    raw = str((data or {}).get("token", ""))
+    email = str((data or {}).get("email", "")).strip().lower()
+    code = str((data or {}).get("code", "")).strip()
     password = str((data or {}).get("password", ""))
+    if not email or not re.fullmatch(r"\d{6}", code):
+        return JsonResponse({"error": "Enter the email address and six-digit code."}, status=400)
     if len(password) < 8 or len(password) > 128:
         return JsonResponse({"error": "Use a password between 8 and 128 characters."}, status=400)
-    reset = PasswordResetToken.objects.select_related("account").filter(token_hash=token_digest(raw), expires_at__gt=timezone.now(), used_at__isnull=True).first()
+    reset = PasswordResetToken.objects.select_related("account").filter(
+        account__email__iexact=email,
+        expires_at__gt=timezone.now(),
+        used_at__isnull=True,
+    ).order_by("-created_at").first()
     if reset is None:
-        return JsonResponse({"error": "This reset link is invalid or has expired."}, status=400)
+        return JsonResponse({"error": "This code is invalid or has expired. Request a new code."}, status=400)
+    if reset.attempts >= 5:
+        return JsonResponse({"error": "Too many incorrect codes. Request a new code."}, status=400)
+    if not secrets.compare_digest(reset.token_hash, token_digest(code)):
+        PasswordResetToken.objects.filter(pk=reset.pk).update(attempts=F("attempts") + 1)
+        return JsonResponse({"error": "This code is invalid or has expired. Check it and try again."}, status=400)
     with transaction.atomic():
         account = reset.account
         account.password = make_password(password)
